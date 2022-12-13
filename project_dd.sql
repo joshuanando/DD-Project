@@ -89,6 +89,157 @@ BEGIN
 END;
 /
 SHOW ERR;
+
+--sparepart
+Create or replace Trigger autoIdSparepart 
+before insert 
+    on sparepart
+    for each row
+declare 
+    temp_id varchar2(10);
+    err exception;
+begin
+	select max(id_spare) into temp_id from sparepart;
+	
+	
+	if temp_id IS NULL then
+		temp_id:=1;
+	ELSE 
+	temp_id := substr(temp_id,2,3)+1;
+	end if;
+	:new.id_spare := concat('S',lpad(temp_id,3,'0'));
+exception 
+    when err then raise_application_error(-20001,'hangus');
+END;
+/
+show err;
+COMMIT;
+
+--sparepartCategory
+Create or replace Trigger autoIdSparepartCategory 
+before insert 
+    on SPAREPART_CATEGORY
+    for each row
+declare 
+    temp_id varchar2(10);
+    err exception;
+begin
+	select max(ID_CATEGORY) into temp_id from SPAREPART_CATEGORY;
+	
+	
+	if temp_id IS NULL then
+		temp_id:=1;
+	ELSE 
+	temp_id := substr(temp_id,2,3)+1;
+	end if;
+	:new.ID_CATEGORY := concat('SC',lpad(temp_id,3,'0'));
+exception 
+    when err then raise_application_error(-20001,'hangus');
+END;
+/
+show err;
+COMMIT;
+
+--STOK_SPAREPART
+Create or replace Trigger autoIdStokSparepart
+before insert 
+    on STOK_SPAREPART
+    for each row
+declare 
+    temp_id varchar2(10);
+    err exception;
+begin
+	select max(ID) into temp_id from STOK_SPAREPART;
+
+	if temp_id IS NULL then
+		temp_id:=1;
+	ELSE 
+	temp_id := temp_id+1;
+	end if;
+
+	:new.ID := temp_id;
+exception 
+    when err then raise_application_error(-20001,'hangus');
+END;
+/
+show err;
+COMMIT;
+
+--HTRANS
+Create or replace Trigger autoIdHtrans
+before insert 
+    on HTRANS
+    for each row
+declare 
+    temp_id varchar2(10);
+    err exception;
+begin
+	select max(ID_Transaksi) into temp_id from HTRANS;
+
+	if temp_id IS NULL then
+		temp_id:=1;
+	ELSE 
+	temp_id := substr(temp_id,2,3)+1;
+	end if;
+
+	:new.ID_Transaksi := concat('HT',lpad(temp_id,3,'0'));
+exception 
+    when err then raise_application_error(-20001,'hangus');
+END;
+/
+show err;
+COMMIT;
+
+--CABANG
+Create or replace Trigger autoIdCabang
+before insert 
+    on CABANG
+    for each row
+declare 
+    temp_id varchar2(10);
+    err exception;
+begin
+	select max(ID_CABANG) into temp_id from CABANG;
+
+	if temp_id IS NULL then
+		temp_id:=1;
+	ELSE 
+	temp_id := substr(temp_id,2,3)+1;
+	end if;
+
+	:new.ID_CABANG := concat('C',lpad(temp_id,3,'0'));
+exception 
+    when err then raise_application_error(-20001,'hangus');
+END;
+/
+show err;
+COMMIT;
+
+--TOOLS_CATEGORY
+Create or replace Trigger autoIdToolsCategory
+before insert 
+    on TOOLS_CATEGORY
+    for each row
+declare 
+    temp_id varchar2(10);
+    err exception;
+begin
+	select max(ID_KATEGORI) into temp_id from TOOLS_CATEGORY;
+
+	if temp_id IS NULL then
+		temp_id:=1;
+	ELSE 
+	temp_id := substr(temp_id,2,3)+1;
+	end if;
+
+	:new.ID_KATEGORI := concat('CAT',lpad(temp_id,3,'0'));
+exception 
+    when err then raise_application_error(-20001,'hangus');
+END;
+/
+show err;
+COMMIT;
+
 -- AHASS/001
 
 --INSERT INTO TOOLS_CATEGORY VALUES ('CAT/001','PUMP');
