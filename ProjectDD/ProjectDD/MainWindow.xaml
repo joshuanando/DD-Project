@@ -1,0 +1,24 @@
+﻿<Window x:Class="ProjectDD.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ProjectDD"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+        <Label Content="LOGIN CABANG BENGKEL" HorizontalAlignment="Center" Height="50" Margin="0,32,0,0" VerticalAlignment="Top" Width="308" FontSize="24" FontWeight="Bold"/>
+        <Button x:Name="btn_login" Content="Login" HorizontalAlignment="Center" Height="36" Margin="0,337,0,0" VerticalAlignment="Top" Width="186" FontSize="16" Cursor="Hand" Click="btn_login_Click"/>
+        <ComboBox x:Name="cb_cabang" HorizontalAlignment="Center" Height="27" Margin="0,250,0,0" VerticalAlignment="Top" Width="308">
+            <ComboBoxItem Content="CABJON" IsSelected="True"/>
+            <ComboBoxItem Content="CABBRY"/>
+            <ComboBoxItem Content="CABDAVE"/>
+            <ComboBoxItem Content="CABNANDO"/>
+        </ComboBox>
+        <TextBox x:Name="txtbox_username" HorizontalAlignment="Left" Margin="330,158,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="224" Height="26" FontSize="16"/>
+        <TextBox x:Name="txtbox_password" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" Width="224" Height="26" FontSize="16" Margin="330,0,0,0"/>
+        <Label Content="USERNAME" HorizontalAlignment="Left" Margin="246,158,0,0" VerticalAlignment="Top"/>
+        <Label Content="PASSWORD" HorizontalAlignment="Left" Margin="246,0,0,0" VerticalAlignment="Center"/>
+
+    </Grid>
+</Window>
