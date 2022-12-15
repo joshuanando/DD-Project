@@ -41,5 +41,11 @@ namespace ProjectDD
             reader.Close();
             conn.Close();
         }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            Master.view_Tools vt = new Master.view_Tools();
+            vt.Show();
+        }
     }
 }

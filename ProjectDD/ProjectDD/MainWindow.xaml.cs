@@ -41,11 +41,13 @@ namespace ProjectDD
 
             MessageBox.Show(connectionString);
             OracleConnection conn = new OracleConnection(connectionString);
+            connection.addConn(conn);
+            connection.cabangnow = cabang;
 
             try
             {
-                conn.Open();
-                conn.Close();
+                connection.openConn();
+                connection.closeConn();
                 WindowTransaction w = new WindowTransaction(conn);
                 w.ShowDialog();
             }

@@ -4,17 +4,17 @@
 winexe
 C#
 .cs
-D:\Github\DD-Project\ProjectDD\ProjectDD\ProjectDD\obj\Debug\
+D:\KULIAH\SEMESTER_7\Distributed_Database\DD-Project\ProjectDD\ProjectDD\obj\Debug\
 ProjectDD
 none
 false
 DEBUG;TRACE
-D:\Github\DD-Project\ProjectDD\ProjectDD\ProjectDD\App.xaml
-2630798978
+D:\KULIAH\SEMESTER_7\Distributed_Database\DD-Project\ProjectDD\ProjectDD\App.xaml
+31179612728
 
-7-2030869279
-14-696654261
-MainWindow.xaml;WindowTransaction.xaml;
+9-1980713529
+141352463141
+MainWindow.xaml;Master\view_Tools.xaml;WindowTransaction.xaml;
 
-False
+True
 
