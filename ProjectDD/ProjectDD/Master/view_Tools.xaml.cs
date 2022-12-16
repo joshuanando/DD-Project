@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,6 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Oracle.DataAccess.Client;
 
 namespace ProjectDD.Master
 {
@@ -19,7 +21,23 @@ namespace ProjectDD.Master
     /// </summary>
     public partial class view_Tools : Window
     {
-        List<string> listcabang = new List<string>(new string[] { "local", "dave", "jonathan", "bryan", "nando" });
+
+        public class db_cab
+        {
+            public string nama_cabang { get; set; }
+            public string nama_db { get; set; }
+        }
+
+        DataTable dt;
+
+        List<db_cab> listcabang = new List<db_cab>() 
+        {
+            new db_cab() { nama_cabang = "local", nama_db = "LOCAL_TOOLS"},
+            new db_cab() { nama_cabang = "dave", nama_db = "LOCAL_TOOLS"},
+            new db_cab() { nama_cabang = "bryan", nama_db = "LOCAL_TOOLS"},
+            new db_cab() { nama_cabang = "nando", nama_db = "LOCAL_TOOLS"},
+        };
+
         public view_Tools()
         {
             InitializeComponent();
@@ -28,13 +46,11 @@ namespace ProjectDD.Master
 
         public void init()
         {
-            //MessageBox.Show(connection.cabangnow.Substring(3).ToLower());
-            listcabang.Remove(connection.cabangnow.Substring(3).ToLower());
+            listcabang.RemoveAll(x => x.nama_cabang == connection.cabangnow.Substring(3).ToLower());
             cabang_cb.Items.Clear();
-            foreach (var cabang in listcabang)
-            {
-                cabang_cb.Items.Add(cabang);
-            }
+            cabang_cb.ItemsSource = listcabang;
+            cabang_cb.DisplayMemberPath = "nama_cabang";
+            cabang_cb.SelectedValuePath = "nama_db";
             cabang_cb.SelectedItem = cabang_cb.Items[0];
         }
 
@@ -42,12 +58,58 @@ namespace ProjectDD.Master
         {
             try
             {
-                MessageBox.Show(cabang_cb.SelectedItem.ToString());
+                load_tools();
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
+                connection.closeConn();
             }
+        }
+
+        private void load_tools()
+        {
+            connection.openConn();
+            OracleCommand cmd = new OracleCommand();
+            cmd.Connection = connection.conn;
+            cmd.CommandText = "SELECT * FROM " + cabang_cb.SelectedValue.ToString();
+            //MessageBox.Show(cmd.CommandText);
+            dt = new DataTable();
+            cmd.ExecuteNonQuery();
+            OracleDataAdapter oda = new OracleDataAdapter(cmd);
+            oda.Fill(dt);
+            Tools_DG.ItemsSource = dt.DefaultView;
+            connection.closeConn();
+        }
+
+        private void refresh_button_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                refresh_view_tools();
+                load_tools();
+                MessageBox.Show("Database berhasil diperbarui");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                connection.closeConn();
+            }
+        }
+
+        private void refresh_view_tools()
+        {
+            connection.openConn();
+            OracleCommand cmd = new OracleCommand();
+            cmd.Connection = connection.conn;
+            cmd.CommandText = "BEGIN dbms_mview.refresh('" + cabang_cb.SelectedValue.ToString() + "',method=>'C'); END;";
+            //MessageBox.Show(cmd.CommandText);
+            dt = new DataTable();
+            cmd.ExecuteNonQuery();
+            OracleDataAdapter oda = new OracleDataAdapter(cmd);
+            oda.Fill(dt);
+            Tools_DG.ItemsSource = dt.DefaultView;
+            connection.closeConn();
         }
     }
 }

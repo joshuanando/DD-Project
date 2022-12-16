@@ -8,8 +8,9 @@
         Title="view_Tools" Height="450" Width="800">
     <Grid>
         <DataGrid x:Name="Tools_DG" HorizontalAlignment="Left" Height="228" Margin="77,103,0,0" VerticalAlignment="Top" Width="627"/>
-        <ComboBox x:Name="cabang_cb" HorizontalAlignment="Left" Margin="497,46,0,0" VerticalAlignment="Top" Width="120"/>
-        <Button x:Name="search_button" Content="Search" HorizontalAlignment="Left" Margin="629,46,0,0" VerticalAlignment="Top" Width="75" Click="search_button_Click"/>
+        <ComboBox x:Name="cabang_cb" HorizontalAlignment="Left" Margin="433,48,0,0" VerticalAlignment="Top" Width="120"/>
+        <Button x:Name="search_button" Content="Search" HorizontalAlignment="Left" Margin="565,48,0,0" VerticalAlignment="Top" Width="75" Click="search_button_Click" RenderTransformOrigin="-0.053,0.65"/>
+        <Button x:Name="refresh_button" Content="Refresh" HorizontalAlignment="Left" Margin="656,48,0,0" VerticalAlignment="Top" Width="48" Click="refresh_button_Click"/>
 
     </Grid>
 </Window>
