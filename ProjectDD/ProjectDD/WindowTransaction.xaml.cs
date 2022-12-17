@@ -25,6 +25,24 @@ namespace ProjectDD
         {
             InitializeComponent();
             conn = c;
+            init();
+        }
+
+        string[] listview = { "View Tools", "View Sparepart" };
+
+        private void init()
+        {
+            showcabang();
+            for (int i = 0; i < listview.Length; i++)
+            {
+                view_cb.Items.Add(listview[i]);
+            }
+            view_cb.SelectedItem = view_cb.Items[0];
+        }
+
+        private void showcabang()
+        {
+            label_cabang.Content = "Welcome to " + connection.cabangnow;
         }
 
         private void loadItems()
@@ -44,8 +62,22 @@ namespace ProjectDD
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            Master.view_Tools vt = new Master.view_Tools();
-            vt.Show();
+            //MessageBox.Show(view_cb.SelectedItem.ToString());
+            switch (view_cb.SelectedItem.ToString())
+            {
+                case "View Tools":
+                    Master.view_Tools vt = new Master.view_Tools();
+                    vt.Show();
+                    break;
+                case "View Sparepart":
+                    Master.view_Spareparts vs = new Master.view_Spareparts();
+                    vs.Show();
+                    break;
+                default:
+                    break;
+            }
         }
+
+
     }
 }
