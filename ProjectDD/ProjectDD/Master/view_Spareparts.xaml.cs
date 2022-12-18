@@ -22,20 +22,15 @@ namespace ProjectDD.Master
     public partial class view_Spareparts : Window
     {
 
-        public class db_cab
-        {
-            public string nama_cabang { get; set; }
-            public string nama_db { get; set; }
-        }
-
         DataTable dt;
 
         List<db_cab> listcabang = new List<db_cab>()
         {
             new db_cab() { nama_cabang = "local", nama_db = "LOCAL_SPAREPART"},
-            new db_cab() { nama_cabang = "dave", nama_db = "LOCAL_SPAREPART"},
+            new db_cab() { nama_cabang = "dave", nama_db = "LOCAL_SPAREPART@cabdave"},
             new db_cab() { nama_cabang = "bryan", nama_db = "LOCAL_SPAREPART"},
             new db_cab() { nama_cabang = "nando", nama_db = "LOCAL_SPAREPART"},
+            new db_cab() { nama_cabang = "jon", nama_db = "LOCAL_SPAREPART@cabjon"},
         };
         public view_Spareparts()
         {
@@ -102,7 +97,7 @@ namespace ProjectDD.Master
             OracleCommand cmd = new OracleCommand();
             cmd.Connection = connection.conn;
             cmd.CommandText = "BEGIN dbms_mview.refresh('" + cabang_cb.SelectedValue.ToString() + "',method=>'C'); END;";
-            //MessageBox.Show(cmd.CommandText);
+            MessageBox.Show(cmd.CommandText);
             cmd.ExecuteNonQuery();
             connection.closeConn();
         }

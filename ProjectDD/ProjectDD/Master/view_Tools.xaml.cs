@@ -22,20 +22,15 @@ namespace ProjectDD.Master
     public partial class view_Tools : Window
     {
 
-        public class db_cab
-        {
-            public string nama_cabang { get; set; }
-            public string nama_db { get; set; }
-        }
-
         DataTable dt;
 
         List<db_cab> listcabang = new List<db_cab>() 
         {
             new db_cab() { nama_cabang = "local", nama_db = "LOCAL_TOOLS"},
-            new db_cab() { nama_cabang = "dave", nama_db = "LOCAL_TOOLS"},
+            new db_cab() { nama_cabang = "dave", nama_db = "LOCAL_TOOLS@cabdave"},
             new db_cab() { nama_cabang = "bryan", nama_db = "LOCAL_TOOLS"},
             new db_cab() { nama_cabang = "nando", nama_db = "LOCAL_TOOLS"},
+            new db_cab() { nama_cabang = "jon", nama_db = "LOCAL_TOOLS@cabjon"},
         };
 
         public view_Tools()

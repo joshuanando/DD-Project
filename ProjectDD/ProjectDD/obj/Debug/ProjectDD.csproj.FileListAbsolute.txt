@@ -29,12 +29,10 @@ D:\KULIAH\SEMESTER_7\Distributed_Database\DD-Project\ProjectDD\ProjectDD\bin\Deb
 D:\KULIAH\SEMESTER_7\Distributed_Database\DD-Project\ProjectDD\ProjectDD\obj\Debug\ProjectDD.csproj.AssemblyReference.cache
 D:\KULIAH\SEMESTER_7\Distributed_Database\DD-Project\ProjectDD\ProjectDD\obj\Debug\MainWindow.g.cs
 D:\KULIAH\SEMESTER_7\Distributed_Database\DD-Project\ProjectDD\ProjectDD\obj\Debug\Master\view_Tools.g.cs
-D:\KULIAH\SEMESTER_7\Distributed_Database\DD-Project\ProjectDD\ProjectDD\obj\Debug\WindowTransaction.g.cs
 D:\KULIAH\SEMESTER_7\Distributed_Database\DD-Project\ProjectDD\ProjectDD\obj\Debug\App.g.cs
 D:\KULIAH\SEMESTER_7\Distributed_Database\DD-Project\ProjectDD\ProjectDD\obj\Debug\ProjectDD_MarkupCompile.cache
 D:\KULIAH\SEMESTER_7\Distributed_Database\DD-Project\ProjectDD\ProjectDD\obj\Debug\ProjectDD_MarkupCompile.lref
 D:\KULIAH\SEMESTER_7\Distributed_Database\DD-Project\ProjectDD\ProjectDD\obj\Debug\MainWindow.baml
-D:\KULIAH\SEMESTER_7\Distributed_Database\DD-Project\ProjectDD\ProjectDD\obj\Debug\WindowTransaction.baml
 D:\KULIAH\SEMESTER_7\Distributed_Database\DD-Project\ProjectDD\ProjectDD\obj\Debug\Master\view_Tools.baml
 D:\KULIAH\SEMESTER_7\Distributed_Database\DD-Project\ProjectDD\ProjectDD\obj\Debug\ProjectDD.g.resources
 D:\KULIAH\SEMESTER_7\Distributed_Database\DD-Project\ProjectDD\ProjectDD\obj\Debug\ProjectDD.Properties.Resources.resources
@@ -55,3 +53,7 @@ D:\Github\DD-Project\ProjectDD\ProjectDD\obj\Debug\Master\Admin.baml
 D:\Github\DD-Project\ProjectDD\ProjectDD\obj\Debug\Kasir\Kasir.baml
 D:\Github\DD-Project\ProjectDD\ProjectDD\obj\Debug\MainWindow.g.cs
 D:\Github\DD-Project\ProjectDD\ProjectDD\obj\Debug\MainWindow.baml
+D:\KULIAH\SEMESTER_7\Distributed_Database\DD-Project\ProjectDD\ProjectDD\obj\Debug\Master\Admin.g.cs
+D:\KULIAH\SEMESTER_7\Distributed_Database\DD-Project\ProjectDD\ProjectDD\obj\Debug\Kasir\Kasir.g.cs
+D:\KULIAH\SEMESTER_7\Distributed_Database\DD-Project\ProjectDD\ProjectDD\obj\Debug\Master\Admin.baml
+D:\KULIAH\SEMESTER_7\Distributed_Database\DD-Project\ProjectDD\ProjectDD\obj\Debug\Kasir\Kasir.baml
