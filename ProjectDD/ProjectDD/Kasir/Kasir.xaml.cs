@@ -23,10 +23,14 @@ namespace ProjectDD
     {
         OracleConnection conn;
         DataTable dt;
+
         public Kasir(OracleConnection c)
         {
             InitializeComponent();        
             conn = c;
+            date_start.SelectedDate = DateTime.ParseExact("2022-01-01", "yyyy-MM-dd",
+                                           System.Globalization.CultureInfo.CurrentCulture);
+            date_end.SelectedDate = DateTime.Now;
             init();
         }
 
@@ -35,6 +39,7 @@ namespace ProjectDD
         private void init()
         {
             showcabang();
+            load_history();
             for (int i = 0; i < listview.Length; i++)
             {
                 view_cb.Items.Add(listview[i]);
@@ -72,20 +77,21 @@ namespace ProjectDD
             //FILTER DATE 
             DateTime dtstart = date_start.DisplayDate;
             DateTime dtend = date_end.DisplayDate;
-
-            if (dtstart!=null && dtend!=null)
+            if (date_start.SelectedDate != null && date_end.SelectedDate != null)
             {
-                MessageBox.Show(dtstart.ToString()+','+ dtend.ToString());
-                rules += "";
+                string tgl1 = date_start.SelectedDate.ToString().Split(' ')[0];
+                string tgl2 = date_end.SelectedDate.ToString().Split(' ')[0];
+                rules += $"to_date(to_char(tanggal,'dd/mm/yyyy'),'dd/mm/yyyy') <= to_date('{tgl2}','dd/mm/yyyy') and " +
+                         $"to_date(to_char(tanggal,'dd/mm/yyyy'),'dd/mm/yyyy') >=to_date('{tgl1}','dd/mm/yyyy')";
             }
             //FILTER STATUS
             string status = cb_status.SelectionBoxItem.ToString();
-            if (rules.Length > 0) rules += " and";
+            if (rules.Length > 0 && status.ToUpper()!="ALL") rules += " and";
             if (status.ToUpper() == "UNFINISHED") rules += " status=0";            
             else if (status.ToUpper() == "FINISHED") rules += " status=1";
             if (rules.Length > 0)
             {
-                cmd.CommandText += "where "+rules;
+                cmd.CommandText += " where "+rules+" order by tanggal desc";
             }
             //MessageBox.Show(cmd.CommandText);
             try
