@@ -58,7 +58,13 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Master\Admin.xaml.cs">
+      <DependentUpon>Admin.xaml</DependentUpon>
+    </Compile>
     <Compile Include="connection.cs" />
+    <Compile Include="Kasir\Kasir.xaml.cs">
+      <DependentUpon>Kasir.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Master\view_Spareparts.xaml.cs">
       <DependentUpon>view_Spareparts.xaml</DependentUpon>
     </Compile>
@@ -68,6 +74,14 @@
     <Compile Include="WindowTransaction.xaml.cs">
       <DependentUpon>WindowTransaction.xaml</DependentUpon>
     </Compile>
+    <Page Include="Master\Admin.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Kasir\Kasir.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

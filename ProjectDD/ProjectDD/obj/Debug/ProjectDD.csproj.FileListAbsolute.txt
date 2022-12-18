@@ -7,7 +7,6 @@ D:\Github\DD-Project\ProjectDD\ProjectDD\ProjectDD\obj\Debug\ProjectDD_MarkupCom
 D:\Github\DD-Project\ProjectDD\ProjectDD\ProjectDD\obj\Debug\MainWindow.g.cs
 D:\Github\DD-Project\ProjectDD\ProjectDD\ProjectDD\obj\Debug\WindowTransaction.g.cs
 D:\Github\DD-Project\ProjectDD\ProjectDD\obj\Debug\ProjectDD.csprojAssemblyReference.cache
-D:\Github\DD-Project\ProjectDD\ProjectDD\obj\Debug\MainWindow.g.cs
 D:\Github\DD-Project\ProjectDD\ProjectDD\obj\Debug\WindowTransaction.g.cs
 D:\Github\DD-Project\ProjectDD\ProjectDD\obj\Debug\App.g.cs
 D:\Github\DD-Project\ProjectDD\ProjectDD\obj\Debug\ProjectDD_MarkupCompile.cache
@@ -16,7 +15,6 @@ D:\Github\DD-Project\ProjectDD\ProjectDD\bin\Debug\ProjectDD.exe.config
 D:\Github\DD-Project\ProjectDD\ProjectDD\bin\Debug\ProjectDD.exe
 D:\Github\DD-Project\ProjectDD\ProjectDD\bin\Debug\ProjectDD.pdb
 D:\Github\DD-Project\ProjectDD\ProjectDD\bin\Debug\Oracle.DataAccess.dll
-D:\Github\DD-Project\ProjectDD\ProjectDD\obj\Debug\MainWindow.baml
 D:\Github\DD-Project\ProjectDD\ProjectDD\obj\Debug\WindowTransaction.baml
 D:\Github\DD-Project\ProjectDD\ProjectDD\obj\Debug\ProjectDD.g.resources
 D:\Github\DD-Project\ProjectDD\ProjectDD\obj\Debug\ProjectDD.Properties.Resources.resources
@@ -47,3 +45,13 @@ D:\KULIAH\SEMESTER_7\Distributed_Database\DD-Project\ProjectDD\ProjectDD\obj\Deb
 D:\KULIAH\SEMESTER_7\Distributed_Database\DD-Project\ProjectDD\ProjectDD\obj\Debug\ProjectDD.csproj.CopyComplete
 D:\KULIAH\SEMESTER_7\Distributed_Database\DD-Project\ProjectDD\ProjectDD\obj\Debug\Master\view_Spareparts.g.cs
 D:\KULIAH\SEMESTER_7\Distributed_Database\DD-Project\ProjectDD\ProjectDD\obj\Debug\Master\view_Spareparts.baml
+D:\Github\DD-Project\ProjectDD\ProjectDD\obj\Debug\Master\view_Spareparts.g.cs
+D:\Github\DD-Project\ProjectDD\ProjectDD\obj\Debug\Master\view_Tools.g.cs
+D:\Github\DD-Project\ProjectDD\ProjectDD\obj\Debug\Master\view_Spareparts.baml
+D:\Github\DD-Project\ProjectDD\ProjectDD\obj\Debug\Master\view_Tools.baml
+D:\Github\DD-Project\ProjectDD\ProjectDD\obj\Debug\Master\Admin.g.cs
+D:\Github\DD-Project\ProjectDD\ProjectDD\obj\Debug\Kasir\Kasir.g.cs
+D:\Github\DD-Project\ProjectDD\ProjectDD\obj\Debug\Master\Admin.baml
+D:\Github\DD-Project\ProjectDD\ProjectDD\obj\Debug\Kasir\Kasir.baml
+D:\Github\DD-Project\ProjectDD\ProjectDD\obj\Debug\MainWindow.g.cs
+D:\Github\DD-Project\ProjectDD\ProjectDD\obj\Debug\MainWindow.baml

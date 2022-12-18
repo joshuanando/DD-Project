@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ProjectDD"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="800" WindowStartupLocation="CenterScreen">
     <Grid>
         <Label Content="LOGIN CABANG BENGKEL" HorizontalAlignment="Center" Height="50" Margin="0,32,0,0" VerticalAlignment="Top" Width="308" FontSize="24" FontWeight="Bold"/>
         <Button x:Name="btn_login" Content="Login" HorizontalAlignment="Center" Height="36" Margin="0,337,0,0" VerticalAlignment="Top" Width="186" FontSize="16" Cursor="Hand" Click="btn_login_Click"/>

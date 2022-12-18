@@ -48,14 +48,24 @@ namespace ProjectDD
             {
                 connection.openConn();
                 connection.closeConn();
-                WindowTransaction w = new WindowTransaction(conn);
-                w.ShowDialog();
+                if (username.ToLower() == "admin")
+                {
+                    Admin w = new Admin(conn);
+                    this.Hide();
+                    w.ShowDialog();
+                }
+                else if (username.ToLower() == "kasir")
+                {
+                    Kasir w = new Kasir(conn);
+                    this.Hide();
+                    w.ShowDialog();
+                }
+                this.Visibility = Visibility.Visible;
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
-            conn.Close();
         }
     }
 }
