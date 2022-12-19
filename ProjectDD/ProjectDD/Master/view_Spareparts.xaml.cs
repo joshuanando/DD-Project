@@ -28,8 +28,8 @@ namespace ProjectDD.Master
         {
             new db_cab() { nama_cabang = "local", nama_db = "LOCAL_SPAREPART"},
             new db_cab() { nama_cabang = "dave", nama_db = "LOCAL_SPAREPART@cabdave"},
-            new db_cab() { nama_cabang = "bryan", nama_db = "LOCAL_SPAREPART"},
-            new db_cab() { nama_cabang = "nando", nama_db = "LOCAL_SPAREPART"},
+            new db_cab() { nama_cabang = "bryan", nama_db = "LOCAL_SPAREPART@cabbry"},
+            new db_cab() { nama_cabang = "nando", nama_db = "LOCAL_SPAREPART@cabnando"},
             new db_cab() { nama_cabang = "jon", nama_db = "LOCAL_SPAREPART@cabjon"},
         };
         public view_Spareparts()
