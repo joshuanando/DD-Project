@@ -28,8 +28,8 @@ namespace ProjectDD.Master
         {
             new db_cab() { nama_cabang = "local", nama_db = "LOCAL_TOOLS"},
             new db_cab() { nama_cabang = "dave", nama_db = "LOCAL_TOOLS@cabdave"},
-            new db_cab() { nama_cabang = "bryan", nama_db = "LOCAL_TOOLS"},
-            new db_cab() { nama_cabang = "nando", nama_db = "LOCAL_TOOLS"},
+            new db_cab() { nama_cabang = "bryan", nama_db = "LOCAL_TOOLS@cabbry"},
+            new db_cab() { nama_cabang = "nando", nama_db = "LOCAL_TOOLS@cabnando"},
             new db_cab() { nama_cabang = "jon", nama_db = "LOCAL_TOOLS@cabjon"},
         };
 
@@ -99,11 +99,7 @@ namespace ProjectDD.Master
             cmd.Connection = connection.conn;
             cmd.CommandText = "BEGIN dbms_mview.refresh('" + cabang_cb.SelectedValue.ToString() + "',method=>'C'); END;";
             //MessageBox.Show(cmd.CommandText);
-            dt = new DataTable();
             cmd.ExecuteNonQuery();
-            OracleDataAdapter oda = new OracleDataAdapter(cmd);
-            oda.Fill(dt);
-            Tools_DG.ItemsSource = dt.DefaultView;
             connection.closeConn();
         }
     }
