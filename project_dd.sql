@@ -100,7 +100,7 @@ begin
 	if temp_id IS NULL then
 		temp_id:=1;
 	ELSE 
-	temp_id := substr(temp_id,2,3)+1;
+	temp_id := substr(temp_id,-3,3)+1;
 	end if;
 	:new.id_spare := concat('S',lpad(temp_id,3,'0'));
 exception 
@@ -125,7 +125,7 @@ begin
 	if temp_id IS NULL then
 		temp_id:=1;
 	ELSE 
-	temp_id := substr(temp_id,2,3)+1;
+	temp_id := substr(temp_id,-3,3)+1;
 	end if;
 	:new.ID_CATEGORY := concat('SC',lpad(temp_id,3,'0'));
 exception 
@@ -174,7 +174,7 @@ begin
 	if temp_id IS NULL then
 		temp_id:=1;
 	ELSE 
-	temp_id := substr(temp_id,2,3)+1;
+	temp_id := substr(temp_id,-3,3)+1;
 	end if;
 
 	:new.ID_Transaksi := concat('HT',lpad(temp_id,3,'0'));
@@ -199,7 +199,7 @@ begin
 	if temp_id IS NULL then
 		temp_id:=1;
 	ELSE 
-	temp_id := substr(temp_id,2,3)+1;
+	temp_id := substr(temp_id,-3,3)+1;
 	end if;
 
 	:new.ID_CABANG := concat('C',lpad(temp_id,3,'0'));
@@ -224,7 +224,7 @@ begin
 	if temp_id IS NULL then
 		temp_id:=1;
 	ELSE 
-	temp_id := substr(temp_id,2,3)+1;
+	temp_id := substr(temp_id,-3,3)+1;
 	end if;
 
 	:new.ID_KATEGORI := concat('CAT',lpad(temp_id,3,'0'));
