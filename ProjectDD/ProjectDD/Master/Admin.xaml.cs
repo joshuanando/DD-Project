@@ -77,5 +77,30 @@ namespace ProjectDD
                     break;
             }
         }
+
+        private void btnCheck_Clicked(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void btnHistory_Clicked(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void btnProduct_Clicked(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void btnStok_Clicked(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void btnKategori_Clicked(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
