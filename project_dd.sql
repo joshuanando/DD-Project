@@ -1,13 +1,16 @@
-DROP TABLE TOOLS PURGE;
-DROP TABLE SPAREPART PURGE;
-DROP TABLE TOOLS_CATEGORY PURGE;
-DROP TABLE SPAREPART_CATEGORY PURGE;
-DROP TABLE DTRANS PURGE;
-DROP TABLE HTRANS PURGE;
+DROP TABLE TOOLS CASCADE CONSTRAINTS;
+DROP TABLE SPAREPART CASCADE CONSTRAINTS;
+DROP TABLE TOOLS_CATEGORY CASCADE CONSTRAINTS;
+DROP TABLE SPAREPART_CATEGORY CASCADE CONSTRAINTS;
+DROP TABLE DTRANS CASCADE CONSTRAINTS;
+DROP TABLE HTRANS CASCADE CONSTRAINTS;
 DROP MATERIALIZED VIEW LOCAL_TOOLS;
 DROP MATERIALIZED VIEW LOCAL_SPAREPART;
--- DROP PUBLIC DATABASE LINK CABDAVE;
+DROP PUBLIC DATABASE LINK CABDAVE;
 DROP PUBLIC DATABASE LINK CABJON;
+DROP PUBLIC DATABASE LINK CABBRY;
+DROP PUBLIC DATABASE LINK CABNANDO;
+PURGE RECYCLEBIN;
 
 CREATE TABLE TOOLS_CATEGORY(
 	ID_KATEGORI VARCHAR2(9) PRIMARY KEY,
@@ -48,6 +51,7 @@ CREATE TABLE HTRANS (
 	NPWP VARCHAR2(20),
 	NO_POLISI VARCHAR2(20) NOT NULL,
 	DESKRIPSI_KENDARAAN VARCHAR2(50),
+	TOTAL NUMBER,
 	STATUS NUMBER(1) DEFAULT 0
 );
 
@@ -57,10 +61,12 @@ CREATE TABLE DTRANS (
 	ID_HTRANS VARCHAR2(14),
 	ID_ITEM VARCHAR2(10),
 	NAMA_ITEM VARCHAR2(50),
-	HARGA_ITEM VARCHAR2(30),
+	HARGA_ITEM NUMBER,
+	JUMLAH NUMBER,
 	FOREIGN KEY (ID_HTRANS) REFERENCES HTRANS(ID_Transaksi)
 );
 
+--ID TOOLS
 CREATE OR REPLACE TRIGGER create_id_tools 
 BEFORE INSERT ON TOOLS
 FOR EACH ROW
@@ -79,7 +85,7 @@ END;
 /
 SHOW ERR;
 
---sparepart
+--ID sparepart
 Create or replace Trigger autoIdSparepart 
 before insert 
     on sparepart
@@ -104,7 +110,7 @@ END;
 show err;
 COMMIT;
 
---sparepartCategory
+--ID sparepartCategory
 Create or replace Trigger autoIdSparepartCategory 
 before insert 
     on SPAREPART_CATEGORY
@@ -123,13 +129,13 @@ begin
 	end if;
 	:new.ID_CATEGORY := concat('SC',lpad(temp_id,3,'0'));
 exception 
-    when err then raise_application_error(-20001,'hangus');
+    when err then raise_application_error(-20002,'hangus');
 END;
 /
 show err;
 COMMIT;
 
---STOK_SPAREPART
+--ID STOK_SPAREPART
 Create or replace Trigger autoIdStokSparepart
 before insert 
     on STOK_SPAREPART
@@ -148,13 +154,13 @@ begin
 
 	:new.ID := temp_id;
 exception 
-    when err then raise_application_error(-20001,'hangus');
+    when err then raise_application_error(-20003,'hangus');
 END;
 /
 show err;
 COMMIT;
 
---HTRANS
+--ID HTRANS
 Create or replace Trigger autoIdHtrans
 before insert 
     on HTRANS
@@ -173,13 +179,13 @@ begin
 
 	:new.ID_Transaksi := concat('HT',lpad(temp_id,3,'0'));
 exception 
-    when err then raise_application_error(-20001,'hangus');
+    when err then raise_application_error(-20004,'hangus');
 END;
 /
 show err;
 COMMIT;
 
---CABANG
+--ID CABANG
 Create or replace Trigger autoIdCabang
 before insert 
     on CABANG
@@ -198,13 +204,13 @@ begin
 
 	:new.ID_CABANG := concat('C',lpad(temp_id,3,'0'));
 exception 
-    when err then raise_application_error(-20001,'hangus');
+    when err then raise_application_error(-20005,'hangus');
 END;
 /
 show err;
 COMMIT;
 
---TOOLS_CATEGORY
+--ID TOOLS_CATEGORY
 Create or replace Trigger autoIdToolsCategory
 before insert 
     on TOOLS_CATEGORY
@@ -223,11 +229,65 @@ begin
 
 	:new.ID_KATEGORI := concat('CAT',lpad(temp_id,3,'0'));
 exception 
-    when err then raise_application_error(-20001,'hangus');
+    when err then raise_application_error(-20006,'hangus');
 END;
 /
 show err;
 COMMIT;
+
+--TRIGGER UPDATE HTRANS
+Create or replace Trigger autoSumHtrans
+after insert 
+    on dtrans
+    for each row
+declare 
+    tot number(11);
+    err exception;
+begin
+	select SUM(HARGA_ITEM*JUMLAH) into TOT from DTRANS WHERE ID_HTRANS=:NEW.ID_HTRANS;
+	UPDATE HTRANS SET TOTAL=tot where ID_HTRANS=:NEW.ID_HTRANS;
+exception 
+    when err then raise_application_error(-20007,'err sumhtrans');
+END;
+/
+show err;
+COMMIT;
+
+Create or replace Trigger autoSumHtrans
+after UPDATE 
+    on dtrans
+    for each row
+declare 
+    tot number(11);
+    err exception;
+begin
+	select SUM(HARGA_ITEM*JUMLAH) into TOT from DTRANS WHERE ID_HTRANS=:NEW.ID_HTRANS;
+	UPDATE HTRANS SET TOTAL=tot where ID_HTRANS=:NEW.ID_HTRANS;
+exception 
+    when err then raise_application_error(-20007,'err sumhtrans');
+END;
+/
+show err;
+COMMIT;
+
+Create or replace Trigger autoSumHtrans
+after delete 
+    on dtrans
+    for each row
+declare 
+    tot number;
+    err exception;
+begin
+	select SUM(HARGA_ITEM*JUMLAH) into TOT from DTRANS WHERE ID_HTRANS=:NEW.ID_HTRANS;
+	UPDATE HTRANS SET TOTAL=tot where ID_TRANSAKSI=:NEW.ID_HTRANS;
+exception 
+    when err then raise_application_error(-20007,'err sumhtrans');
+END;
+/
+show err;
+COMMIT;
+
+
 
 -- AHASS/001
 CREATE MATERIALIZED VIEW LOCAL_TOOLS as select T.ID_TOOLS,T.NAMA,TC.NAMA as Kategori, (CASE WHEN T.STATUS = 1 THEN 'Available' ELSE 'Not Available' END) as Status FROM TOOLS T,TOOLS_CATEGORY TC WHERE T.ID_KATEGORI=TC.ID_KATEGORI;
@@ -244,8 +304,10 @@ CREATE MATERIALIZED VIEW LOCAL_SPAREPART as select S.ID_SPARE,S.NAME,SC.CATEGORY
 -- field 1 = username
 -- field 2 = password 
 -- field 3 = tns listener name
--- CREATE PUBLIC DATABASE LINK cabdave CONNECT TO admin IDENTIFIED BY admin USING 'cabdave';
+CREATE PUBLIC DATABASE LINK cabdave CONNECT TO admin IDENTIFIED BY admin USING 'cabdave';
 CREATE PUBLIC DATABASE LINK cabjon CONNECT TO admin IDENTIFIED BY admin USING 'cabjon'; 
+CREATE PUBLIC DATABASE LINK cabnando CONNECT TO admin IDENTIFIED BY nando USING 'cabnando'; 
+CREATE PUBLIC DATABASE LINK cabbry CONNECT TO admin IDENTIFIED BY admin USING 'cabbry'; 
 
 -- KASIR
 DROP USER KASIR;
