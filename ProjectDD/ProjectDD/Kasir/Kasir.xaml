@@ -10,19 +10,20 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="49*"/>
             <RowDefinition Height="105*"/>
-            <RowDefinition Height="43*"/>
+            <RowDefinition Height="32"/>
+            <RowDefinition Height="11*"/>
             <RowDefinition Height="222*"/>
         </Grid.RowDefinitions>
-        <GroupBox Header="Transaction" HorizontalAlignment="Left" Height="358" Margin="10,2,0,0" VerticalAlignment="Top" Width="391" Grid.Row="1" Grid.RowSpan="3"/>
+        <GroupBox Header="Transaction" HorizontalAlignment="Left" Height="358" Margin="10,2,0,0" VerticalAlignment="Top" Width="391" Grid.Row="1" Grid.RowSpan="4"/>
 
 
-        <GroupBox Header="History" HorizontalAlignment="Left" Height="358" Margin="406,2,0,0" VerticalAlignment="Top" Width="376" Grid.Row="1" Grid.RowSpan="3"/>
+        <GroupBox Header="History" HorizontalAlignment="Left" Height="358" Margin="406,2,0,0" VerticalAlignment="Top" Width="376" Grid.Row="1" Grid.RowSpan="4"/>
 
         <Label x:Name="label_cabang" Content="Welcome to cab" HorizontalAlignment="Left" Margin="532,10,0,0" VerticalAlignment="Top" Height="32" Width="250" FontSize="18" HorizontalContentAlignment="Right" />
         <Button x:Name="Button_view_stok" Content="View" HorizontalAlignment="Left" Margin="335,15,0,0" VerticalAlignment="Top" Width="66" Height="21" Click="ButtonView_Click"/>
         <ComboBox x:Name="view_cb" HorizontalAlignment="Left" Margin="168,14,0,0" VerticalAlignment="Top" Width="162"/>
         <Label Content="Check Tools and Spareparts" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
-        <DataGrid x:Name="dg_history" HorizontalAlignment="Left" Height="235" Margin="432,5,0,0" VerticalAlignment="Top" Width="328" Grid.Row="2" Grid.RowSpan="2"/>
+        <DataGrid x:Name="dg_history" HorizontalAlignment="Left" Height="235" Margin="432,5,0,0" VerticalAlignment="Top" Width="328" Grid.Row="2" Grid.RowSpan="3" MouseDoubleClick="dg_history_MouseDoubleClick"/>
         <DatePicker x:Name="date_start" HorizontalAlignment="Left" Margin="479,38,0,0" VerticalAlignment="Top" Width="127" Grid.Row="1"/>
         <Label Content="Filter" HorizontalAlignment="Left" Margin="432,36,0,0" VerticalAlignment="Top" Grid.Row="1"/>
         <DatePicker x:Name="date_end" HorizontalAlignment="Left" Margin="634,38,0,0" VerticalAlignment="Top" Width="126" Grid.Row="1"/>
@@ -35,35 +36,38 @@
         <Label Content="to" HorizontalAlignment="Left" Margin="609,37,0,0" VerticalAlignment="Top" Grid.Row="1"/>
         <Button x:Name="btn_hist_refresh" Content="Refresh" HorizontalAlignment="Left" Margin="685,73,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_1" Grid.Row="1"/>
 
-        <Label Content="Item:" HorizontalAlignment="Left" Margin="25,35,0,0" VerticalAlignment="Top" Grid.Row="3"/>
-        <Button x:Name="btn_submit" Content="Submit" HorizontalAlignment="Left" Margin="33,181,0,0" VerticalAlignment="Top" Width="127" Grid.Row="3"/>
-        <Label Content="Action:" HorizontalAlignment="Left" Margin="33,155,0,0" VerticalAlignment="Top" Grid.Row="3"/>
-        <Label x:Name="label_action" Content="Add/Update" HorizontalAlignment="Left" Margin="85,155,0,0" VerticalAlignment="Top" Grid.Row="3"/>
-        <Button x:Name="btn_cancel" Content="Cancel / Clear" HorizontalAlignment="Left" Margin="268,181,0,0" VerticalAlignment="Top" Width="112" Grid.Row="3"/>
-        <Label Content="x" HorizontalAlignment="Left" Margin="221,35,0,0" VerticalAlignment="Top" Grid.Row="3"/>
-        <Label Content="Status" HorizontalAlignment="Left" Margin="263,18,0,0" VerticalAlignment="Top" Grid.Row="1"/>
-        <ListView HorizontalAlignment="Left" Height="87" Margin="25,62,0,0" VerticalAlignment="Top" Width="360" Grid.Row="3">
+        <Label Content="Item" HorizontalAlignment="Left" Margin="25,40,0,0" VerticalAlignment="Top" Grid.Row="4"/>
+        <Button x:Name="btn_submit" Content="Submit" HorizontalAlignment="Left" Margin="33,184,0,0" VerticalAlignment="Top" Width="127" Grid.Row="4"/>
+        <Label Content="Action:" HorizontalAlignment="Left" Margin="33,162,0,0" VerticalAlignment="Top" Grid.Row="4"/>
+        <Label x:Name="label_action" Content="Add" HorizontalAlignment="Left" Margin="85,162,0,0" VerticalAlignment="Top" Grid.Row="4"/>
+        <Button x:Name="btn_cancel" Content="Cancel / Clear" HorizontalAlignment="Left" Margin="268,184,0,0" VerticalAlignment="Top" Width="112" Grid.Row="4" Click="btn_cancel_Click"/>
+        <Label Content="x" HorizontalAlignment="Left" Margin="225,38,0,0" VerticalAlignment="Top" Grid.Row="4"/>
+        <Label Content="Status" HorizontalAlignment="Left" Margin="263,14,0,0" VerticalAlignment="Top" Grid.Row="1"/>
+        <ListView HorizontalAlignment="Left" Height="95" Margin="25,68,0,0" VerticalAlignment="Top" Width="360" Grid.Row="4">
             <ListView.View>
                 <GridView>
                     <GridViewColumn/>
                 </GridView>
             </ListView.View>
         </ListView>
-        <Label x:Name="label_ID" Content="ID" HorizontalAlignment="Left" Margin="25,20,0,0" VerticalAlignment="Top" Grid.Row="1"/>
-        <Button x:Name="btn_additem"  Content="Add Item" HorizontalAlignment="Left" Margin="310,37,0,0" VerticalAlignment="Top" Width="75" Grid.Row="3"/>
-        <TextBox HorizontalAlignment="Left" Height="20" Margin="242,37,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="50" Grid.Row="3"/>
-        <ComboBox x:Name="cb_item"  HorizontalAlignment="Left" Height="20" Margin="65,37,0,0" VerticalAlignment="Top" Width="151" Grid.Row="3" IsSynchronizedWithCurrentItem="True" IsEditable="True"/>
-        <CheckBox x:Name="chk_status"  Content="FINISHED" HorizontalAlignment="Left" Margin="307,24,0,0" VerticalAlignment="Top" Grid.Row="1"/>
-        <Label Content="Nama Pemilik" HorizontalAlignment="Left" Margin="30,44,0,0" VerticalAlignment="Top" Grid.Row="1" Padding="1"/>
-        <TextBox x:Name="tb_nama" HorizontalAlignment="Left" Height="16" Margin="117,45,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="268" Grid.Row="1"/>
-        <Label Content="Alamat Pemilik" HorizontalAlignment="Left" Margin="30,65,0,0" VerticalAlignment="Top" Grid.Row="1" Padding="1"/>
-        <TextBox x:Name="tb_alamat" HorizontalAlignment="Left" Height="16" Margin="117,66,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="268" Grid.Row="1"/>
-        <Label Content="No KTP" HorizontalAlignment="Left" Margin="30,86,0,0" VerticalAlignment="Top" Grid.Row="1" Padding="1"/>
-        <TextBox x:Name="tb_no_ktp" HorizontalAlignment="Left" Height="16" Margin="117,87,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="268" Grid.Row="1"/>
-        <Label Content="No Polisi" HorizontalAlignment="Left" Margin="30,2,0,0" VerticalAlignment="Top" Grid.Row="2" Padding="1"/>
-        <TextBox x:Name="tb_no_polisi" HorizontalAlignment="Left" Height="16" Margin="117,3,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="268" Grid.Row="2"/>
-        <Label Content="Deskripsi" HorizontalAlignment="Left" Margin="30,23,0,0" VerticalAlignment="Top" Grid.Row="2" Padding="1"/>
-        <TextBox x:Name="tb_deskripsi" HorizontalAlignment="Left" Height="49" Margin="117,24,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="268" Grid.Row="2" Grid.RowSpan="2" AcceptsReturn="True"/>
+        <Label x:Name="label_ID" Content="ID" HorizontalAlignment="Left" Margin="25,16,0,0" VerticalAlignment="Top" Grid.Row="1"/>
+        <Button x:Name="btn_additem"  Content="Add Item" HorizontalAlignment="Left" Margin="298,42,0,0" VerticalAlignment="Top" Width="87" Grid.Row="4"/>
+        <TextBox HorizontalAlignment="Left" Height="20" Margin="241,43,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="43" Grid.Row="4"/>
+        <ComboBox x:Name="cb_item"  HorizontalAlignment="Left" Height="20" Margin="65,42,0,0" VerticalAlignment="Top" Width="160" Grid.Row="4" IsSynchronizedWithCurrentItem="True" IsEditable="True"/>
+        <CheckBox x:Name="chk_status"  Content="FINISHED" HorizontalAlignment="Left" Margin="307,20,0,0" VerticalAlignment="Top" Grid.Row="1"/>
+        <Label Content="Nama Pemilik" HorizontalAlignment="Left" Margin="29,36,0,0" VerticalAlignment="Top" Grid.Row="1" Padding="1"/>
+        <TextBox x:Name="tb_nama" HorizontalAlignment="Left" Height="16" Margin="116,37,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="268" Grid.Row="1"/>
+        <Label Content="Alamat Pemilik" HorizontalAlignment="Left" Margin="29,57,0,0" VerticalAlignment="Top" Grid.Row="1" Padding="1"/>
+        <TextBox x:Name="tb_alamat" HorizontalAlignment="Left" Height="16" Margin="116,58,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="268" Grid.Row="1"/>
+        <Label Content="No KTP" HorizontalAlignment="Left" Margin="29,78,0,0" VerticalAlignment="Top" Grid.Row="1" Padding="1"/>
+        <TextBox x:Name="tb_no_ktp" HorizontalAlignment="Left" Height="16" Margin="116,79,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="268" Grid.Row="1"/>
+        <Label Content="No Polisi" HorizontalAlignment="Left" Margin="29,99,0,0" VerticalAlignment="Top" Grid.Row="1" Padding="1" Grid.RowSpan="2"/>
+        <TextBox x:Name="tb_no_polisi" HorizontalAlignment="Left" Height="16" Margin="116,100,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="268" Grid.Row="1" Grid.RowSpan="2"/>
+        <Label Content="Deskripsi" HorizontalAlignment="Left" Margin="29,15,0,0" VerticalAlignment="Top" Grid.Row="2" Padding="1" Grid.RowSpan="2"/>
+        <TextBox x:Name="tb_deskripsi" HorizontalAlignment="Left" Height="37" Margin="116,16,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="268" Grid.Row="2" Grid.RowSpan="3" AcceptsReturn="True"/>
+        <ComboBox x:Name="cb_trans_cab" HorizontalAlignment="Left" Margin="116,15,0,0" VerticalAlignment="Top" Width="120" Grid.Row="4" Height="20"/>
+        <Label Content="Label" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <Label Content="Cabang" HorizontalAlignment="Left" Margin="26,11,0,0" VerticalAlignment="Top" Grid.Row="4"/>
 
     </Grid>
 </Window>

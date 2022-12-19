@@ -23,6 +23,16 @@ namespace ProjectDD
     {
         OracleConnection conn;
         DataTable dt;
+        bool isupdating = false;
+
+        List<db_cab> listcabang = new List<db_cab>()
+        {
+            new db_cab() { nama_cabang = "local", nama_db = ""},
+            new db_cab() { nama_cabang = "cabdave", nama_db = ""},
+            new db_cab() { nama_cabang = "cabbry", nama_db = ""},
+            new db_cab() { nama_cabang = "cabnando", nama_db = ""},
+            new db_cab() { nama_cabang = "cabjon", nama_db = ""},
+        };
 
         public Kasir(OracleConnection c)
         {
@@ -45,6 +55,12 @@ namespace ProjectDD
                 view_cb.Items.Add(listview[i]);
             }
             view_cb.SelectedItem = view_cb.Items[0];
+            listcabang.RemoveAll(x => x.nama_cabang == connection.cabangnow);
+            cb_trans_cab.Items.Clear();
+            cb_trans_cab.ItemsSource = listcabang;
+            cb_trans_cab.DisplayMemberPath = "nama_cabang";
+            cb_trans_cab.SelectedValuePath = "nama_cabang";
+            cb_trans_cab.SelectedItem = cb_trans_cab.Items[0];
         }
 
         private void showcabang()
@@ -131,6 +147,25 @@ namespace ProjectDD
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
             load_history();
+        }
+
+        private void dg_history_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            //update
+            isupdating = true;
+            label_action.Content = "Update";
+        }
+
+        private void btn_cancel_Click(object sender, RoutedEventArgs e)
+        {
+            isupdating = false;
+            label_action.Content = "Add";
+            tb_alamat.Text = "";
+            tb_deskripsi.Text = "";
+            tb_nama.Text = "";
+            tb_no_ktp.Text = "";
+            tb_no_polisi.Text = "";
+
         }
     }
 }
