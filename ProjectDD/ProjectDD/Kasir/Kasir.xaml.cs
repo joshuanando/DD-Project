@@ -250,6 +250,7 @@ namespace ProjectDD
             catch(Exception ex)
             {
                 MessageBox.Show(ex.Message);
+                conn.Close();
             }            
         }
         private void ComboBox_SelectionUpdate(object sender, KeyEventArgs e)
