@@ -10,6 +10,7 @@ namespace ProjectDD
     {
         public String id { get; set; }
         public String nama { get; set; }
+
         public String status;
 
         public Item(string id, string nama)

@@ -185,6 +185,19 @@ namespace ProjectDD
         {
             // add item to list items
             // check qty first if adding new transaction
+
+            if (cb_item.SelectedValue != null)
+            {
+                Item i = listitem[cb_item.SelectedIndex];
+                i.status = "@" + tb_qty.Text;
+                listbuyitem.Add(i);
+            }
+            updateListBuyItems();
+        }
+        private void updateListBuyItems()
+        {
+            //load listbuyitem to dg_listbuy
+            dg_listbuy.ItemsSource = listbuyitem;
         }
 
         private void btn_submit_Click(object sender, RoutedEventArgs e)
