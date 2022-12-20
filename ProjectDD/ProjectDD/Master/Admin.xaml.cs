@@ -122,6 +122,10 @@ namespace ProjectDD
                     Master.view_Spareparts vs = new Master.view_Spareparts();
                     vs.Show();
                     break;
+                case "Delete":
+                    Master.Kategori_Sparepart.Kategori_Sparepart_Delete dsk = new Master.Kategori_Sparepart.Kategori_Sparepart_Delete();
+                    dsk.Show();
+                    break;
                 default:
                     break;
             }
