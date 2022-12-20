@@ -29,6 +29,7 @@ namespace ProjectDD
         }
 
         string[] listview = { "View Tools", "View Sparepart" };
+        String[] CRUD = { "Insert", "Update", "Delete" };
 
         private void init()
         {
@@ -38,6 +39,12 @@ namespace ProjectDD
                 view_cb.Items.Add(listview[i]);
             }
             view_cb.SelectedItem = view_cb.Items[0];
+
+            for (int i = 0; i < CRUD.Length; i++)
+            {
+                kat_spareCB.Items.Add(CRUD[i]);
+            }
+            kat_spareCB.SelectedItem = kat_spareCB.Items[0];
         }
 
         private void showcabang()
@@ -101,6 +108,23 @@ namespace ProjectDD
         private void btnKategori_Clicked(object sender, RoutedEventArgs e)
         {
 
+        }
+
+        private void kat_sparepart_button_Click(object sender, RoutedEventArgs e)
+        {
+            switch (kat_spareCB.SelectedItem.ToString())
+            {
+                case "Insert":
+                    Master.Kategori_Sparepart.Kategori_Sparepart_Insert sk = new Master.Kategori_Sparepart.Kategori_Sparepart_Insert();
+                    sk.Show();
+                    break;
+                case "View Sparepart":
+                    Master.view_Spareparts vs = new Master.view_Spareparts();
+                    vs.Show();
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }
