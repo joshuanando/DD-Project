@@ -80,3 +80,7 @@ E:\Documents\Semester_7\DD\Project\DD-Project\ProjectDD\ProjectDD\obj\Debug\Proj
 E:\Documents\Semester_7\DD\Project\DD-Project\ProjectDD\ProjectDD\obj\Debug\ProjectDD.csproj.CoreCompileInputs.cache
 E:\Documents\Semester_7\DD\Project\DD-Project\ProjectDD\ProjectDD\obj\Debug\ProjectDD.exe
 E:\Documents\Semester_7\DD\Project\DD-Project\ProjectDD\ProjectDD\obj\Debug\ProjectDD.pdb
+D:\KULIAH\SEMESTER_7\Distributed_Database\DD-Project\ProjectDD\ProjectDD\obj\Debug\Master\Kategori_Sparepart\Kategori_Sparepart_Insert.g.cs
+D:\KULIAH\SEMESTER_7\Distributed_Database\DD-Project\ProjectDD\ProjectDD\obj\Debug\Master\Kategori_Sparepart\Kategori_Sparepart_Insert.baml
+D:\KULIAH\SEMESTER_7\Distributed_Database\DD-Project\ProjectDD\ProjectDD\obj\Debug\Master\Kategori_Sparepart\Kategori_Sparepart_Delete.g.cs
+D:\KULIAH\SEMESTER_7\Distributed_Database\DD-Project\ProjectDD\ProjectDD\obj\Debug\Master\Kategori_Sparepart\Kategori_Sparepart_Delete.baml
