@@ -1,0 +1,17 @@
+﻿<Window x:Class="ProjectDD.Master.Kategori_Sparepart.Kategori_Sparepart_Insert"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ProjectDD.Master.Kategori_Sparepart"
+        mc:Ignorable="d"
+        Title="Kategori_Sparepart_Insert" Height="450" Width="800">
+    <Grid>
+        <Label Content="Insert Kategori Sparepart" HorizontalAlignment="Left" Margin="36,30,0,0" VerticalAlignment="Top" FontSize="20"/>
+        <TextBox x:Name="nama_txt" HorizontalAlignment="Left" Height="23" Margin="48,125,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
+        <Label Content="Nama" HorizontalAlignment="Left" Margin="48,94,0,0" VerticalAlignment="Top"/>
+        <DataGrid x:Name="DG_Kat_spare" HorizontalAlignment="Left" Height="365" Margin="304,30,0,0" VerticalAlignment="Top" Width="468"/>
+        <Button x:Name="spare_cat_insert" Content="Insert" HorizontalAlignment="Left" Margin="48,167,0,0" VerticalAlignment="Top" Width="75" Click="spare_cat_insert_Click"/>
+
+    </Grid>
+</Window>
