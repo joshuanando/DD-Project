@@ -8,8 +8,8 @@ namespace ProjectDD
 {
     class Tools : Item
     {
-        public String id_categori { get; set; }
-        public int status { get; set; }
+        String id_categori;
+        int status;
 
         public Tools(string id, string nama, string id_categori, int status) : base(id, nama)
         {
