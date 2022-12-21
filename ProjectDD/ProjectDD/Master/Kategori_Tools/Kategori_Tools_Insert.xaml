@@ -11,6 +11,6 @@
         <TextBox x:Name="nama_txt" HorizontalAlignment="Left" Height="23" Margin="48,125,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
         <Label Content="Nama" HorizontalAlignment="Left" Margin="48,94,0,0" VerticalAlignment="Top"/>
         <DataGrid x:Name="DG_Kat_tools" HorizontalAlignment="Left" Height="365" Margin="304,30,0,0" VerticalAlignment="Top" Width="468"/>
-        <Button x:Name="tools_cat_insert" Content="Insert" HorizontalAlignment="Left" Margin="48,167,0,0" VerticalAlignment="Top" Width="75"/>
+        <Button x:Name="tools_cat_insert" Content="Insert" HorizontalAlignment="Left" Margin="48,167,0,0" VerticalAlignment="Top" Width="75" Click="tools_cat_insert_Click"/>
     </Grid>
 </Window>
