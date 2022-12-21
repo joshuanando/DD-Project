@@ -16,11 +16,10 @@ namespace ProjectDD.Master
 
         List<db_cab> listcabang = new List<db_cab>() 
         {
-            new db_cab() { nama_cabang = "local", nama_db = "LOCAL_TOOLS"},
-            new db_cab() { nama_cabang = "dave", nama_db = "LOCAL_TOOLS@cabdave"},
-            new db_cab() { nama_cabang = "bryan", nama_db = "LOCAL_TOOLS@cabbry"},
-            new db_cab() { nama_cabang = "nando", nama_db = "LOCAL_TOOLS@cabnando"},
-            new db_cab() { nama_cabang = "jon", nama_db = "LOCAL_TOOLS@cabjon"},
+            new db_cab() { nama_cabang = "dave", nama_db = "tools_cabdave"},
+            new db_cab() { nama_cabang = "bryan", nama_db = "tools_cabbry"},
+            new db_cab() { nama_cabang = "nando", nama_db = "tools_cabnando"},
+            new db_cab() { nama_cabang = "jon", nama_db = "tools_cabjon"},
         };
 
         public view_Tools()
@@ -31,12 +30,23 @@ namespace ProjectDD.Master
 
         public void init()
         {
-            listcabang.RemoveAll(x => x.nama_cabang == connection.cabangnow.Substring(3).ToLower());
+            //listcabang.RemoveAll(x => x.nama_cabang == connection.cabangnow.Substring(3).ToLower());
+
+            int giliran = 0;
+
+            for (int i = 0; i < listcabang.Count; i++)
+            {
+                if (listcabang[i].nama_cabang == connection.cabangnow.Substring(3).ToLower())
+                {
+                    giliran = i;
+                }
+            }
+
             cabang_cb.Items.Clear();
             cabang_cb.ItemsSource = listcabang;
             cabang_cb.DisplayMemberPath = "nama_cabang";
             cabang_cb.SelectedValuePath = "nama_db";
-            cabang_cb.SelectedItem = cabang_cb.Items[0];
+            cabang_cb.SelectedItem = cabang_cb.Items[giliran];
         }
 
         private void search_button_Click(object sender, RoutedEventArgs e)
