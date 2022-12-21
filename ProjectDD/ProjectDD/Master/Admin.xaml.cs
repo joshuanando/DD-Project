@@ -19,6 +19,7 @@ namespace ProjectDD
 
         string[] listview = { "View Tools", "View Sparepart" };
         String[] CRUD = { "Insert", "Update", "Delete" };
+        string[] tablename = { "Sparepart Category", "Tools Category" };
 
         private void init()
         {
@@ -31,9 +32,15 @@ namespace ProjectDD
 
             for (int i = 0; i < CRUD.Length; i++)
             {
-                kat_spareCB.Items.Add(CRUD[i]);
+                CRUD_CB.Items.Add(CRUD[i]);
             }
-            kat_spareCB.SelectedItem = kat_spareCB.Items[0];
+            CRUD_CB.SelectedItem = CRUD_CB.Items[0];
+
+            for (int i = 0; i < tablename.Length; i++)
+            {
+                TableCB.Items.Add(tablename[i]);
+            }
+            TableCB.SelectedItem = TableCB.Items[0];
         }
 
         private void showcabang()
@@ -99,9 +106,45 @@ namespace ProjectDD
 
         }
 
-        private void kat_sparepart_button_Click(object sender, RoutedEventArgs e)
+        private void go_button_Click(object sender, RoutedEventArgs e)
         {
-            switch (kat_spareCB.SelectedItem.ToString())
+            switch (TableCB.SelectedItem.ToString())
+            {
+                case "Sparepart Category":
+                    sparepart_category();
+                    break;
+                case "Tools Category":
+                    tools_category();
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void sparepart_category()
+        {
+            switch (CRUD_CB.SelectedItem.ToString())
+            {
+                case "Insert":
+                    Master.Kategori_Sparepart.Kategori_Sparepart_Insert sk = new Master.Kategori_Sparepart.Kategori_Sparepart_Insert();
+                    sk.Show();
+                    break;
+                case "Update":
+                    Master.Kategori_Sparepart.Kategori_Sparepart_Update usk = new Master.Kategori_Sparepart.Kategori_Sparepart_Update();
+                    usk.Show();
+                    break;
+                case "Delete":
+                    Master.Kategori_Sparepart.Kategori_Sparepart_Delete dsk = new Master.Kategori_Sparepart.Kategori_Sparepart_Delete();
+                    dsk.Show();
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void tools_category()
+        {
+            switch (CRUD_CB.SelectedItem.ToString())
             {
                 case "Insert":
                     Master.Kategori_Sparepart.Kategori_Sparepart_Insert sk = new Master.Kategori_Sparepart.Kategori_Sparepart_Insert();

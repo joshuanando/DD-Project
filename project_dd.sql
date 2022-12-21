@@ -24,7 +24,7 @@ DEF LOCALID = 'CBJ'
 select '&LOCALID' from dual;
 
 CREATE TABLE TOOLS_CATEGORY(
-	ID_KATEGORI VARCHAR2(10) PRIMARY KEY,
+	ID_CATEGORY VARCHAR2(10) PRIMARY KEY,
 	-- CAT/001
 	NAMA VARCHAR2(100)
 );
@@ -33,10 +33,10 @@ CREATE TABLE TOOLS(
 	ID_TOOLS VARCHAR2(10) PRIMARY KEY,
 	-- AHASS/001
 	NAMA VARCHAR2(100),
-	ID_KATEGORI VARCHAR2(10),
+	ID_CATEGORY VARCHAR2(10),
 	STATUS NUMBER(1),
 	-- 0 = not available, 1 = available
-	FOREIGN KEY (ID_KATEGORI) REFERENCES TOOLS_CATEGORY(ID_KATEGORI) 
+	FOREIGN KEY (ID_CATEGORY) REFERENCES TOOLS_CATEGORY(ID_CATEGORY) 
 );
 
 CREATE TABLE SPAREPART_CATEGORY(
@@ -107,14 +107,14 @@ declare
     temp_id varchar2(10);
     err exception;
 begin
-	select max(ID_KATEGORI) into temp_id from TOOLS_CATEGORY;
+	select max(ID_CATEGORY) into temp_id from TOOLS_CATEGORY;
 	if temp_id IS NULL then
 		temp_id:=1;
 	ELSE 
 	temp_id := substr(temp_id,-3,3)+1;
 	end if;
 
-	:new.ID_KATEGORI := 'CAT'||lpad(temp_id,3,'0');
+	:new.ID_CATEGORY := 'CAT'||lpad(temp_id,3,'0');
 exception 
     when err then raise_application_error(-20006,'hangus');
 END;
@@ -315,10 +315,10 @@ CREATE PUBLIC DATABASE LINK cabjon CONNECT TO admin IDENTIFIED BY admin USING 'c
 CREATE PUBLIC DATABASE LINK cabnando CONNECT TO admin IDENTIFIED BY nando USING 'cabnando'; 
 CREATE PUBLIC DATABASE LINK cabbry CONNECT TO admin IDENTIFIED BY admin USING 'cabbry'; 
 
-CREATE MATERIALIZED VIEW TOOLS_cabdave as select T.ID_TOOLS,T.NAMA,TC.NAMA as Kategori, (CASE WHEN T.STATUS = 1 THEN 'Available' ELSE 'Not Available' END) as Status FROM TOOLS@cabdave T,TOOLS_CATEGORY@cabdave TC WHERE T.ID_KATEGORI=TC.ID_KATEGORI;
-CREATE MATERIALIZED VIEW TOOLS_cabjon as select T.ID_TOOLS,T.NAMA,TC.NAMA as Kategori, (CASE WHEN T.STATUS = 1 THEN 'Available' ELSE 'Not Available' END) as Status FROM TOOLS@cabjon T,TOOLS_CATEGORY@cabjon TC WHERE T.ID_KATEGORI=TC.ID_KATEGORI;
-CREATE MATERIALIZED VIEW TOOLS_cabbry as select T.ID_TOOLS,T.NAMA,TC.NAMA as Kategori, (CASE WHEN T.STATUS = 1 THEN 'Available' ELSE 'Not Available' END) as Status FROM TOOLS@cabbry T,TOOLS_CATEGORY@cabbry TC WHERE T.ID_KATEGORI=TC.ID_KATEGORI;
-CREATE MATERIALIZED VIEW TOOLS_cabnando as select T.ID_TOOLS,T.NAMA,TC.NAMA as Kategori, (CASE WHEN T.STATUS = 1 THEN 'Available' ELSE 'Not Available' END) as Status FROM TOOLS@cabnando T,TOOLS_CATEGORY@cabnando TC WHERE T.ID_KATEGORI=TC.ID_KATEGORI;
+CREATE MATERIALIZED VIEW TOOLS_cabdave as select T.ID_TOOLS,T.NAMA,TC.NAMA as Kategori, (CASE WHEN T.STATUS = 1 THEN 'Available' ELSE 'Not Available' END) as Status FROM TOOLS@cabdave T,TOOLS_CATEGORY@cabdave TC WHERE T.ID_CATEGORY=TC.ID_CATEGORY;
+CREATE MATERIALIZED VIEW TOOLS_cabjon as select T.ID_TOOLS,T.NAMA,TC.NAMA as Kategori, (CASE WHEN T.STATUS = 1 THEN 'Available' ELSE 'Not Available' END) as Status FROM TOOLS@cabjon T,TOOLS_CATEGORY@cabjon TC WHERE T.ID_CATEGORY=TC.ID_CATEGORY;
+CREATE MATERIALIZED VIEW TOOLS_cabbry as select T.ID_TOOLS,T.NAMA,TC.NAMA as Kategori, (CASE WHEN T.STATUS = 1 THEN 'Available' ELSE 'Not Available' END) as Status FROM TOOLS@cabbry T,TOOLS_CATEGORY@cabbry TC WHERE T.ID_CATEGORY=TC.ID_CATEGORY;
+CREATE MATERIALIZED VIEW TOOLS_cabnando as select T.ID_TOOLS,T.NAMA,TC.NAMA as Kategori, (CASE WHEN T.STATUS = 1 THEN 'Available' ELSE 'Not Available' END) as Status FROM TOOLS@cabnando T,TOOLS_CATEGORY@cabnando TC WHERE T.ID_CATEGORY=TC.ID_CATEGORY;
 
 CREATE MATERIALIZED VIEW SPAREPART_cabdave as select S.ID_SPARE,S.NAME,SC.CATEGORY_NAME,S.STOK,S.DESCRIPTION FROM SPAREPART@cabdave S, SPAREPART_CATEGORY@cabdave SC WHERE S.ID_CATEGORY = SC.ID_CATEGORY; 
 CREATE MATERIALIZED VIEW SPAREPART_cabjon as select S.ID_SPARE,S.NAME,SC.CATEGORY_NAME,S.STOK,S.DESCRIPTION FROM SPAREPART@cabjon S, SPAREPART_CATEGORY@cabjon SC WHERE S.ID_CATEGORY = SC.ID_CATEGORY; 
@@ -362,6 +362,18 @@ END;
 /
 show err;
 
+CREATE OR REPLACE PROCEDURE Insert_Cat_Tools ( name IN VARCHAR2)
+IS
+BEGIN
+	INSERT INTO TOOLS_CATEGORY@cabdave VALUES ('', name);
+	INSERT INTO TOOLS_CATEGORY@cabjon VALUES ('', name);
+	INSERT INTO TOOLS_CATEGORY@cabbry VALUES ('', name);
+	INSERT INTO TOOLS_CATEGORY@cabnando VALUES ('', name);
+	commit;
+END;
+/
+show err;
+
 -- KASIR
 DROP USER KASIR;
 CREATE USER KASIR IDENTIFIED BY kasir;
@@ -380,7 +392,7 @@ CREATE or Replace VIEW ITEMS as
 select t.id_tools as "ID" ,t.nama as "NAMA",tc.nama as "KATEGORI", 
 (CASE WHEN T.STATUS = 1 THEN 'Available' ELSE 'Not Available' END) as "STATUS"  
 from tools t,tools_category tc 
-where t.id_kategori = tc.id_kategori
+where t.ID_CATEGORY = tc.ID_CATEGORY
 union
 select s.id_spare as "ID" ,s.name as "NAMA",sc.category_name as "KATEGORI", '@'||s.stok as "STATUS"  
 from sparepart s,sparepart_category sc 

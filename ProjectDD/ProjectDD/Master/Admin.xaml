@@ -16,9 +16,9 @@
         <Button x:Name="btnStok" Content="Stok" HorizontalAlignment="Left" Margin="271,10,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="-0.181,0.618" Click="btnStok_Clicked"/>
         <Button x:Name="btnKategori" Content="Kategori" HorizontalAlignment="Left" Margin="357,10,0,0" VerticalAlignment="Top" Width="75" Click="btnKategori_Clicked"/>
         <Button x:Name="btnCheck" Content="Check" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="75" Click="btnCheck_Clicked"/>
-        <Button x:Name="kat_sparepart_button" Content="Action" HorizontalAlignment="Left" Margin="185,162,0,0" VerticalAlignment="Top" Width="66" Click="kat_sparepart_button_Click"/>
-        <ComboBox x:Name="kat_spareCB" HorizontalAlignment="Left" Margin="10,162,0,0" VerticalAlignment="Top" Width="163"/>
-        <Label Content="Kategori Sparepart" HorizontalAlignment="Left" Margin="10,137,0,0" VerticalAlignment="Top"/>
+        <Button x:Name="go_button" Content="Action" HorizontalAlignment="Left" Margin="361,163,0,0" VerticalAlignment="Top" Width="66" Click="go_button_Click" />
+        <ComboBox x:Name="CRUD_CB" HorizontalAlignment="Left" Margin="186,163,0,0" VerticalAlignment="Top" Width="163"/>
+        <ComboBox x:Name="TableCB" HorizontalAlignment="Left" Margin="11,163,0,0" VerticalAlignment="Top" Width="163"/>
 
     </Grid>
 </Window>
