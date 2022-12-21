@@ -107,9 +107,9 @@ namespace ProjectDD
                     Master.Kategori_Sparepart.Kategori_Sparepart_Insert sk = new Master.Kategori_Sparepart.Kategori_Sparepart_Insert();
                     sk.Show();
                     break;
-                case "View Sparepart":
-                    Master.view_Spareparts vs = new Master.view_Spareparts();
-                    vs.Show();
+                case "Update":
+                    Master.Kategori_Sparepart.Kategori_Sparepart_Update usk = new Master.Kategori_Sparepart.Kategori_Sparepart_Update();
+                    usk.Show();
                     break;
                 case "Delete":
                     Master.Kategori_Sparepart.Kategori_Sparepart_Delete dsk = new Master.Kategori_Sparepart.Kategori_Sparepart_Delete();

@@ -56,8 +56,8 @@ namespace ProjectDD.Master.Kategori_Sparepart
             connection.openConn();
             OracleCommand cmd = new OracleCommand();
             cmd.Connection = connection.conn;
-            cmd.CommandText = "INSERT INTO SPAREPART_CATEGORY VALUES ('',:nama)";
-            cmd.Parameters.Add(":nama", nama_txt.Text);
+            cmd.CommandText = "BEGIN Insert_Cat_Sparepart(:name); END;";
+            cmd.Parameters.Add(":name", nama_txt.Text);
             //MessageBox.Show(cmd.CommandText);
             cmd.ExecuteNonQuery();
             connection.closeConn();
