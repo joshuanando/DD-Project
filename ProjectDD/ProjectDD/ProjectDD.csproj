@@ -80,6 +80,9 @@
     <Compile Include="Master\Kategori_Tools\Kategori_Tools_Insert.xaml.cs">
       <DependentUpon>Kategori_Tools_Insert.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Master\Product.xaml.cs">
+      <DependentUpon>Product.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Master\view_Spareparts.xaml.cs">
       <DependentUpon>view_Spareparts.xaml</DependentUpon>
     </Compile>
@@ -121,6 +124,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Master\Kategori_Tools\Kategori_Tools_Insert.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Master\Product.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
