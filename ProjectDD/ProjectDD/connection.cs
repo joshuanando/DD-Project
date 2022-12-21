@@ -14,13 +14,18 @@ namespace ProjectDD
 
         public static void openConn()
         {
-            conn.Close();
-            conn.Open();
+            if (conn.State == System.Data.ConnectionState.Closed)
+            {
+                conn.Open();
+            }
         }
 
         public static void closeConn()
         {
-            conn.Close();
+            if (conn.State == System.Data.ConnectionState.Open)
+            {
+                conn.Close();
+            }
         }
     }
 }
