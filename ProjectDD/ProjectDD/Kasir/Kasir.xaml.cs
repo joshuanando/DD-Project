@@ -21,7 +21,6 @@ namespace ProjectDD
         List<Item> listitem = new List<Item>();
         List<Item> listbuyitem = new List<Item>();
 
-
         List<db_cab> listcabang = new List<db_cab>()
         {
             new db_cab() { nama_cabang = "-", nama_db = ""},

@@ -218,6 +218,32 @@ END;
 /
 show err;
 
+--ID DTRANS
+Create or replace Trigger autoIdDtrans
+before insert 
+    on DTRANS
+    for each row
+declare 
+    temp_id varchar2(10);
+    localid varchar2(10);
+    err exception;
+begin
+	select max(id) into temp_id from DTRANS;	
+	select '&LOCALID' into localid from dual;	
+
+	if temp_id IS NULL then
+		temp_id:=1;
+	ELSE 
+		temp_id := substr(temp_id,-3,3)+1;
+	end if;
+
+	:new.id := localid||'/DT'||lpad(temp_id,3,'0');
+exception 
+    when err then raise_application_error(-20004,'hangus');
+END;
+/
+show err;
+
 --ID CABANG
 Create or replace Trigger autoIdCabang
 before insert 
