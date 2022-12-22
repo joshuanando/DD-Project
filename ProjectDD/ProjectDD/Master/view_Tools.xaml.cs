@@ -97,7 +97,8 @@ namespace ProjectDD.Master
             connection.openConn();
             OracleCommand cmd = new OracleCommand();
             cmd.Connection = connection.conn;
-            cmd.CommandText = "BEGIN dbms_mview.refresh('" + cabang_cb.SelectedValue.ToString() + "',method=>'C'); END;";
+            //cmd.CommandText = "BEGIN dbms_mview.refresh('" + cabang_cb.SelectedValue.ToString() + "',method=>'C'); END;";
+            cmd.CommandText = "BEGIN REFRESH('" + cabang_cb.SelectedValue.ToString() + "'); END;";
             //MessageBox.Show(cmd.CommandText);
             cmd.ExecuteNonQuery();
             connection.closeConn();
