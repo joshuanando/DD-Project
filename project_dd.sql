@@ -80,15 +80,6 @@ CREATE TABLE DTRANS (
 	FOREIGN KEY (ID_HTRANS) REFERENCES HTRANS(ID_Transaksi)
 );
 
-create table history_stok(
-    id varchar2(10),
-    nama_barang varchar2(20),
-    stok_sebelum number(3),
-    stok_sesudah number(3),
-    keterangan varchar2(30),
-    tanggal date
-);
-
 --------------------TRIGGERS--------------------------
 --ID TOOLS
 CREATE OR REPLACE TRIGGER create_id_tools 
@@ -312,46 +303,6 @@ END autoSumHtrans;
 show err;
 COMMIT;
 
---id history stok
-Create or replace Trigger autoIdHistoryStok
-before insert 
-    on history_stok
-    for each row
-declare 
-    temp_id varchar2(10);
-	localid VARCHAR2(10);
-    err exception;
-begin
-	select max(id) into temp_id from history_stok;
-	select '&LOCALID' into localid from dual;	
-	
-	if temp_id IS NULL then
-		temp_id:=1;
-	ELSE 
-	temp_id := substr(temp_id,-3,3)+1;
-	end if;
-	:new.id := localid || '/H' ||lpad(temp_id,3,'0');
-exception 
-    when err then raise_application_error(-20008,'hangus');
-END;
-/
-show err;
-
---trigger update history
-Create or replace Trigger updateStokHistory
-after update 
-    on sparepart
-    for each row
-declare 
-    err exception;
-begin
-  insert into history_stok values('',:new.name,:old.stok ,:new.stok,'restok barang', current_date);
-exception 
-    when err then raise_application_error(-20009,'hangus');
-END;
-/
-show err;
-
 
 ----------------------------------------------
 
@@ -459,10 +410,10 @@ show err;
 CREATE OR REPLACE PROCEDURE Update_Cat_Tools ( name IN VARCHAR2, id in VARCHAR2)
 IS
 BEGIN
-	UPDATE TOOLS_CATEGORY@cabdave SET NAMA = name WHERE ID_CATEGORY = id;
-	UPDATE TOOLS_CATEGORY@cabjon SET NAMA = name WHERE ID_CATEGORY = id;
-	UPDATE TOOLS_CATEGORY@cabbry SET NAMA = name WHERE ID_CATEGORY = id;
-	UPDATE TOOLS_CATEGORY@cabnando SET NAMA = name WHERE ID_CATEGORY = id;	
+	UPDATE TOOLS_CATEGORY@cabdave SET CATEGORY_NAME = name WHERE ID_CATEGORY = id;
+	UPDATE TOOLS_CATEGORY@cabjon SET CATEGORY_NAME = name WHERE ID_CATEGORY = id;
+	UPDATE TOOLS_CATEGORY@cabbry SET CATEGORY_NAME = name WHERE ID_CATEGORY = id;
+	UPDATE TOOLS_CATEGORY@cabnando SET CATEGORY_NAME = name WHERE ID_CATEGORY = id;	
 	commit;
 END;
 /
@@ -506,6 +457,25 @@ BEGIN
     refresh('sparepart_cabnando');
     refresh('sparepart_cabbry');	
 END;
+/
+show err;
+
+-- buat mendapatkan next htrans di kasir
+CREATE OR REPLACE FUNCTION nextHtransId
+RETURN VARCHAR2
+IS
+    temp_id varchar2(10);
+    localid varchar2(10);
+BEGIN	
+	select max(ID_Transaksi) into temp_id from HTRANS;	
+	select '&LOCALID' into localid from dual;	
+	if temp_id IS NULL then
+		temp_id:=1;
+	ELSE 
+	temp_id := substr(temp_id,-3,3)+1;
+	end if;
+	RETURN localid||'/HT'||lpad(temp_id,3,'0');
+END nextHtransId;
 /
 show err;
 
