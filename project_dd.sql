@@ -406,6 +406,11 @@ CREATE OR REPLACE PROCEDURE refresh ( name IN VARCHAR2)
 IS
 BEGIN
 	DBMS_MVIEW.REFRESH(name);
+    DBMS_OUTPUT.PUT_LINE('REFRESH '|| name ||' SUCCESS!');
+EXCEPTION
+    WHEN OTHERS THEN
+		DBMS_OUTPUT.PUT_LINE('REFRESH '|| name ||' FAILED!');
+        NULL;
 END;
 /
 show err;
@@ -420,7 +425,7 @@ BEGIN
     refresh('sparepart_cabdave');
     refresh('sparepart_cabjon');
     refresh('sparepart_cabnando');
-    refresh('sparepart_cabbry');
+    refresh('sparepart_cabbry');	
 END;
 /
 show err;
