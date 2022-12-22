@@ -246,54 +246,33 @@ show err;
 
 
 --TRIGGER UPDATE HTRANS
-Create or replace Trigger autoSumHtrans3
-after insert 
-    on dtrans
-    for each row
-declare 
-    tot number(11);
-    err exception;
-begin
-	select SUM(HARGA_ITEM*JUMLAH) into TOT from DTRANS WHERE ID_HTRANS=:NEW.ID_HTRANS;
-	UPDATE HTRANS SET TOTAL=tot where ID_TRANSAKSI=:NEW.ID_HTRANS;
-exception 
-    when err then raise_application_error(-20009,'err sumhtrans');
-END;
-/
-show err;
-
-Create or replace Trigger autoSumHtrans1
-after UPDATE 
-    on dtrans
-    for each row
-declare 
-    tot number(11);
-    err exception;
-begin
-	select SUM(HARGA_ITEM*JUMLAH) into TOT from DTRANS WHERE ID_HTRANS=:NEW.ID_HTRANS;
-	UPDATE HTRANS SET TOTAL=tot where ID_TRANSAKSI=:NEW.ID_HTRANS;
-exception 
-    when err then raise_application_error(-20007,'err sumhtrans');
-END;
-/
-show err;
-
-Create or replace Trigger autoSumHtrans2
-after delete 
-    on dtrans
-    for each row
-declare 
+Create or replace Trigger autoSumHtransC
+for insert or update or delete on dtrans 
+compound trigger
     tot number;
     err exception;
+	tempid varchar2(10);
+BEFORE EACH ROW IS
+BEGIN
+	if updating or inserting then
+		tempid := :NEW.ID_HTRANS;
+	end if;
+	if deleting then
+		tempid := :OLD.ID_HTRANS;	
+	end if;
+END BEFORE EACH ROW;
+after statement is 
 begin
-	select SUM(HARGA_ITEM*JUMLAH) into TOT from DTRANS WHERE ID_HTRANS=:NEW.ID_HTRANS;
-	UPDATE HTRANS SET TOTAL=tot where ID_TRANSAKSI=:NEW.ID_HTRANS;
+	select to_number(SUM(HARGA_ITEM*JUMLAH)) into TOT from DTRANS WHERE ID_HTRANS=tempid;
+	UPDATE HTRANS SET TOTAL=to_number(tot) where ID_TRANSAKSI=tempid; 
 exception 
-    when err then raise_application_error(-20008,'err sumhtrans');
-END;
+    when err then raise_application_error(-20006,'err sumhtrans');	
+end after statement;
+END autoSumHtransC;
 /
 show err;
 COMMIT;
+
 
 ----------------------------------------------
 
