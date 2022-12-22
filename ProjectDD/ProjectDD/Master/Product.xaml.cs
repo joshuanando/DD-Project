@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.OracleClient;
+using WPFCustomMessageBox;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -78,6 +79,45 @@ namespace ProjectDD.Master
             try
             {
                 load_tools();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                connection.closeConn();
+            }
+        }
+
+        private void btnView_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                //for (int i = 0; i < dgProduct.Items.Count; i++)
+                //{
+                //    DataGridRow row = (DataGridRow)dgProduct.ItemContainerGenerator.ContainerFromIndex(i);
+
+                //    TextBlock t_name = dgProduct.Columns[0].GetCellContent(row) as TextBlock;
+                //    TextBlock t_type = dgProduct.Columns[1].GetCellContent(row) as TextBlock;
+                //}
+                DataRowView dataRowView = (DataRowView)((Button)e.Source).DataContext;
+                if (CustomMessageBox.ShowOKCancel(
+                    "ID Sparepart: "+ dataRowView[0].ToString()+"\n"+
+                    "=================================================="+
+                    "Nama Sparepart: " + dataRowView[1].ToString() + "\n" +
+                    "Kategori: " + dataRowView[2].ToString() + "\n" +
+                    "Stok: " + dataRowView[3].ToString() + "\n",
+                    "Update / Delete Sparepart",
+                    "Update!",
+                    "Delete!") == MessageBoxResult.OK){
+                    MessageBox.Show("OK");
+                }else{
+                    if (MessageBox.Show("Are you sure want to DELETE this item?",
+                    "Delete Sparepart",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Question) == MessageBoxResult.Yes)
+                    {
+                        MessageBox.Show("Deleted!");
+                    }
+                }
             }
             catch (Exception ex)
             {

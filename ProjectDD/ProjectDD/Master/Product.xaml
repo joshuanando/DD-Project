@@ -8,7 +8,17 @@
         Title="Product" Height="450" Width="800">
     <Grid>
         <Label x:Name="lbl_Title" Content="List Product" HorizontalAlignment="Left" Margin="50,10,0,0" VerticalAlignment="Top" FontWeight="Bold" FontSize="22" FontStyle="Italic"/>
-        <DataGrid x:Name="dgProduct" HorizontalAlignment="Left" Height="280" Margin="50,100,0,0" VerticalAlignment="Top" Width="690"/>
+        <DataGrid x:Name="dgProduct" HorizontalAlignment="Left" Height="280" Margin="50,100,0,0" VerticalAlignment="Top" Width="690" IsReadOnly="True">
+            <DataGrid.Columns>
+                <DataGridTemplateColumn>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Click="btnView_Click" Content="View" Width="75" Height="22" FontWeight="Bold" Background="Yellow"></Button>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
         <Label Content="Pada Cabang:" HorizontalAlignment="Left" Margin="50,63,0,0" VerticalAlignment="Top"/>
         <ComboBox x:Name="cbCabang" HorizontalAlignment="Left" Margin="145,67,0,0" VerticalAlignment="Top" Width="120"/>
         <Button x:Name="btnTampil" Content="Tampilkan" HorizontalAlignment="Left" Margin="270,67,0,0" VerticalAlignment="Top" Width="75" Height="22" HorizontalContentAlignment="Center" Click="btnTampil_Click_1"/>
