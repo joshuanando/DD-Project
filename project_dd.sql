@@ -268,7 +268,7 @@ begin
 exception 
     when err then raise_application_error(-20006,'err sumhtrans');	
 end after statement;
-END autoSumHtransC;
+END autoSumHtrans;
 /
 show err;
 COMMIT;

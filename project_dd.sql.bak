@@ -246,7 +246,7 @@ show err;
 
 
 --TRIGGER UPDATE HTRANS
-Create or replace Trigger autoSumHtransC
+Create or replace Trigger autoSumHtrans
 for insert or update or delete on dtrans 
 compound trigger
     tot number;
