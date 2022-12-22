@@ -84,6 +84,9 @@
     <Compile Include="Master\Kategori_Sparepart\Kategori_Sparepart_Update.xaml.cs">
       <DependentUpon>Kategori_Sparepart_Update.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Master\Kategori_Tools\Kategori_Tools_Delete.xaml.cs">
+      <DependentUpon>Kategori_Tools_Delete.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Master\Kategori_Tools\Kategori_Tools_Insert.xaml.cs">
       <DependentUpon>Kategori_Tools_Insert.xaml</DependentUpon>
     </Compile>
@@ -134,6 +137,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Master\Kategori_Sparepart\Kategori_Sparepart_Update.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Master\Kategori_Tools\Kategori_Tools_Delete.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -148,7 +148,7 @@ namespace ProjectDD
                     usk.Show();
                     break;
                 case "Delete":
-                    Master.Kategori_Sparepart.Kategori_Sparepart_Delete dsk = new Master.Kategori_Sparepart.Kategori_Sparepart_Delete();
+                    Master.Kategori_Tools.Kategori_Tools_Delete dsk = new Master.Kategori_Tools.Kategori_Tools_Delete();
                     dsk.Show();
                     break;
                 default:
