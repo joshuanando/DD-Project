@@ -409,6 +409,29 @@ END;
 /
 show err;
 
+CREATE OR REPLACE PROCEDURE refresh ( name IN VARCHAR2)
+IS
+BEGIN
+	DBMS_MVIEW.REFRESH(name);
+END;
+/
+show err;
+
+CREATE OR REPLACE PROCEDURE refresh_all 
+IS
+BEGIN
+	refresh('tools_cabdave');
+	refresh('tools_cabjon');
+	refresh('tools_cabnando');
+    refresh('tools_cabbry');
+    refresh('sparepart_cabdave');
+    refresh('sparepart_cabjon');
+    refresh('sparepart_cabnando');
+    refresh('sparepart_cabbry');
+END;
+/
+show err;
+
 -- KASIR
 DROP USER KASIR;
 CREATE USER KASIR IDENTIFIED BY kasir;
@@ -433,3 +456,44 @@ select s.id_spare as "ID" ,s.name as "NAMA",sc.category_name as "KATEGORI", '@'|
 from sparepart s,sparepart_category sc 
 where s.id_category = sc.id_category;
 GRANT SELECT ON ITEMS TO KASIR;
+
+-- Dbms_Scheduler.Drop_Job (Job_Name => 'REFRESH')
+
+-- BEGIN
+--  DBMS_SCHEDULER.CREATE_JOB(
+--  JOB_NAME => 'SCHEDULER 1',  
+--   --KALO PAKE PROCEDURE
+--  JOB_TYPE => 'STORED PROCEDURE',
+--  JOB_ACTION => 'REFRESH_MV',      -- INI NAMA PROCEDURE E 
+--   --KALO PAKE PLSQ LANGSUNG
+--  --JOB_TYPE => 'PLSQL_BLOCK',
+--  -- JOB_ACTION =>     -- INI CODE PLSQL
+--   -- 'BEGIN
+--    -- EXECUTE DBMS_MVIEW.REFRESH('');
+--    -- EXECUTE DBMS_MVIEW.REFRESH('');
+--    -- EXECUTE DBMS_MVIEW.REFRESH('');
+--    -- EXECUTE DBMS_MVIEW.REFRESH('');
+--    -- EXECUTE DBMS_MVIEW.REFRESH('');
+--    -- EXECUTE DBMS_MVIEW.REFRESH('');
+--    -- EXECUTE DBMS_MVIEW.REFRESH('');
+--    -- EXECUTE DBMS_MVIEW.REFRESH('');
+--    -- COMMIT;
+--   -- END;',     
+--  REPEAT_INTERVAL => 'FREQ=DAILY; BYHOUR=6,18,23 ;BYMINUTE=00',
+--  ENABLED => 'TRUE'
+-- );
+-- END;
+-- /
+
+DBMS_SCHEDULER.DROP_JOB(Job_Name => 'REFRESH_ALL_MV');
+
+BEGIN
+ DBMS_SCHEDULER.CREATE_JOB(
+	JOB_NAME => 'REFRESH_ALL_MV',
+	JOB_TYPE => 'STORED_PROCEDURE',
+	JOB_ACTION => 'REFRESH_ALL', 
+	REPEAT_INTERVAL => 'FREQ=DAILY; BYHOUR=6,18,23 ;BYMINUTE=00;',
+	ENABLED => TRUE
+ );
+END;
+/
