@@ -4,6 +4,7 @@ DROP TABLE TOOLS_CATEGORY CASCADE CONSTRAINTS;
 DROP TABLE SPAREPART_CATEGORY CASCADE CONSTRAINTS;
 DROP TABLE DTRANS CASCADE CONSTRAINTS;
 DROP TABLE HTRANS CASCADE CONSTRAINTS;
+DROP TABLE JASA CASCADE CONSTRAINTS;
 DROP MATERIALIZED VIEW TOOLS_cabdave;
 DROP MATERIALIZED VIEW TOOLS_cabjon;
 DROP MATERIALIZED VIEW TOOLS_cabbry;
@@ -22,10 +23,18 @@ DROP PUBLIC DATABASE LINK CABBRY;
 DROP PUBLIC DATABASE LINK CABNANDO;
 UNDEFINE LOCALID;
 PURGE RECYCLEBIN;
+SET SERVEROUTPUT ON;
 
 -- INI DIGANTI STRING IDENTIFIER CABANG SENDIRI SEBELUM DI RUN DI SQLPLUS
 DEF LOCALID = 'CBJ'
 select '&LOCALID' from dual;
+
+CREATE TABLE JASA(
+	ID_JASA VARCHAR2(10) PRIMARY KEY,
+	NAMA VARCHAR2(100),
+	HARGA NUMBER,
+	STATUS NUMBER(1)
+);
 
 CREATE TABLE TOOLS_CATEGORY(
 	ID_CATEGORY VARCHAR2(10) PRIMARY KEY,
@@ -53,6 +62,7 @@ CREATE TABLE SPAREPART(
 	NAME VARCHAR2(100) NOT NULL,
 	ID_CATEGORY VARCHAR2(20),
 	STOK NUMBER(10) DEFAULT 0,
+	HARGA NUMBER DEFAULT 0,	
 	DESCRIPTION VARCHAR2(100),
 	FOREIGN KEY (ID_CATEGORY) REFERENCES SPAREPART_CATEGORY(ID_CATEGORY)
 );
@@ -81,6 +91,27 @@ CREATE TABLE DTRANS (
 );
 
 --------------------TRIGGERS--------------------------
+--ID JASA
+CREATE OR REPLACE TRIGGER create_id_jasa 
+BEFORE INSERT ON JASA
+FOR EACH ROW
+DECLARE
+	IDLAMA VARCHAR2(10);
+	countid NUMBER(10);
+	localid VARCHAR2(10);
+BEGIN
+	select MAX(ID_JASA) into IDLAMA from JASA;
+	select '&LOCALID' into localid from dual;
+	if (IDLAMA IS NULL) then 
+		countid := 1;
+	else 
+		countid := substr(IDLAMA,-3,3)+1;
+	end if;
+	:NEW.ID_JASA :=  localid || '/J' || lpad(countid,3,'0');
+END;
+/
+SHOW ERR;
+
 --ID TOOLS
 CREATE OR REPLACE TRIGGER create_id_tools 
 BEFORE INSERT ON TOOLS
@@ -172,30 +203,6 @@ END;
 /
 show err;
 
---ID STOK_SPAREPART
-/* Create or replace Trigger autoIdStokSparepart
-before insert 
-    on STOK_SPAREPART
-    for each row
-declare 
-    temp_id varchar2(10);
-    err exception;
-begin
-	select max(ID) into temp_id from STOK_SPAREPART;
-
-	if temp_id IS NULL then
-		temp_id:=1;
-	ELSE 
-	temp_id := temp_id+1;
-	end if;
-
-	:new.ID := temp_id;
-exception 
-    when err then raise_application_error(-20003,'hangus');
-END;
-/
-show err; */
-
 --ID HTRANS
 Create or replace Trigger autoIdHtrans
 before insert 
@@ -274,7 +281,6 @@ END;
 /
 show err;
 
-
 --TRIGGER UPDATE HTRANS
 Create or replace Trigger autoSumHtrans
 for insert or update or delete on dtrans 
@@ -327,14 +333,21 @@ CREATE PUBLIC DATABASE LINK cabbry CONNECT TO admin IDENTIFIED BY admin USING 'c
 ----------------------------VIEW---------------------------------
 
 CREATE or Replace VIEW ITEMS as 
-select t.id_tools as "ID" ,t.nama as "NAMA",tc.nama as "KATEGORI", 
+select j.id_jasa as "ID", j.nama as "NAMA", j.harga as "HARGA", 'JASA' as "KATEGORI", 
+(CASE WHEN j.STATUS = 1 THEN 'Available' ELSE 'Not Available' END) as "STATUS" 
+from jasa j
+union
+(select t.id_tools as "ID" ,t.nama as "NAMA", 0 as HARGA, tc.nama as "KATEGORI", 
 (CASE WHEN T.STATUS = 1 THEN 'Available' ELSE 'Not Available' END) as "STATUS"  
 from tools t,tools_category tc 
 where t.ID_CATEGORY = tc.ID_CATEGORY
 union
-select s.id_spare as "ID" ,s.name as "NAMA",sc.category_name as "KATEGORI", '@'||s.stok as "STATUS"  
+select s.id_spare as "ID" ,s.name as "NAMA",s.harga as "HARGA" ,sc.category_name as "KATEGORI",
+ '@'||s.stok as "STATUS"  
 from sparepart s,sparepart_category sc 
-where s.id_category = sc.id_category;
+where s.id_category = sc.id_category);
+
+
 
 --------------------MATERIALIZED VIEW--------------------------
 
@@ -349,10 +362,10 @@ CREATE MATERIALIZED VIEW TOOLS_cabnando as select T.ID_TOOLS,T.NAMA,TC.NAMA as K
 CREATE MATERIALIZED VIEW LOG ON SPAREPART with ROWID;
 CREATE MATERIALIZED VIEW LOG ON SPAREPART_CATEGORY with ROWID;
 
-CREATE MATERIALIZED VIEW SPAREPART_cabdave as select S.ID_SPARE,S.NAME,SC.CATEGORY_NAME,S.STOK,S.DESCRIPTION FROM SPAREPART@cabdave S, SPAREPART_CATEGORY@cabdave SC WHERE S.ID_CATEGORY = SC.ID_CATEGORY; 
-CREATE MATERIALIZED VIEW SPAREPART_cabjon as select S.ID_SPARE,S.NAME,SC.CATEGORY_NAME,S.STOK,S.DESCRIPTION FROM SPAREPART@cabjon S, SPAREPART_CATEGORY@cabjon SC WHERE S.ID_CATEGORY = SC.ID_CATEGORY; 
-CREATE MATERIALIZED VIEW SPAREPART_cabbry as select S.ID_SPARE,S.NAME,SC.CATEGORY_NAME,S.STOK,S.DESCRIPTION FROM SPAREPART@cabbry S, SPAREPART_CATEGORY@cabbry SC WHERE S.ID_CATEGORY = SC.ID_CATEGORY; 
-CREATE MATERIALIZED VIEW SPAREPART_cabnando as select S.ID_SPARE,S.NAME,SC.CATEGORY_NAME,S.STOK,S.DESCRIPTION FROM SPAREPART@cabnando S, SPAREPART_CATEGORY@cabnando SC WHERE S.ID_CATEGORY = SC.ID_CATEGORY; 
+CREATE MATERIALIZED VIEW SPAREPART_cabdave as select S.ID_SPARE,S.NAME,SC.CATEGORY_NAME,S.STOK,S.HARGA,S.DESCRIPTION FROM SPAREPART@cabdave S, SPAREPART_CATEGORY@cabdave SC WHERE S.ID_CATEGORY = SC.ID_CATEGORY; 
+CREATE MATERIALIZED VIEW SPAREPART_cabjon as select S.ID_SPARE,S.NAME,SC.CATEGORY_NAME,S.STOK,S.HARGA,S.DESCRIPTION FROM SPAREPART@cabjon S, SPAREPART_CATEGORY@cabjon SC WHERE S.ID_CATEGORY = SC.ID_CATEGORY; 
+CREATE MATERIALIZED VIEW SPAREPART_cabbry as select S.ID_SPARE,S.NAME,SC.CATEGORY_NAME,S.STOK,S.HARGA,S.DESCRIPTION FROM SPAREPART@cabbry S, SPAREPART_CATEGORY@cabbry SC WHERE S.ID_CATEGORY = SC.ID_CATEGORY; 
+CREATE MATERIALIZED VIEW SPAREPART_cabnando as select S.ID_SPARE,S.NAME,SC.CATEGORY_NAME,S.STOK,S.HARGA,S.DESCRIPTION FROM SPAREPART@cabnando S, SPAREPART_CATEGORY@cabnando SC WHERE S.ID_CATEGORY = SC.ID_CATEGORY; 
 
 
 ----------- INSERT AFTER CREATING ALL MVIEW --------------------
