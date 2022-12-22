@@ -22,9 +22,7 @@
         <Label Content="Pada Cabang:" HorizontalAlignment="Left" Margin="50,63,0,0" VerticalAlignment="Top"/>
         <ComboBox x:Name="cbCabang" HorizontalAlignment="Left" Margin="145,67,0,0" VerticalAlignment="Top" Width="120"/>
         <Button x:Name="btnTampil" Content="Tampilkan" HorizontalAlignment="Left" Margin="270,67,0,0" VerticalAlignment="Top" Width="75" Height="22" HorizontalContentAlignment="Center" Click="btnTampil_Click_1"/>
-        <Button x:Name="btnDelProd" Content="(x) Delete" HorizontalAlignment="Left" Margin="665,67,0,0" VerticalAlignment="Top" Width="75" Height="22" FontWeight="Bold" Background="Red"/>
-        <Button x:Name="btnUpProd" Content="(v) Update" HorizontalAlignment="Left" Margin="585,67,0,0" VerticalAlignment="Top" Width="75" Height="22" FontWeight="Bold" Background="Yellow"/>
-        <Button Content="(+) Insert" HorizontalAlignment="Left" Margin="505,67,0,0" VerticalAlignment="Top" Width="75" Height="22" FontWeight="Bold" Background="Lime"/>
+        <Button Content="(+) Insert" HorizontalAlignment="Left" Margin="665,67,0,0" VerticalAlignment="Top" Width="75" Height="22" FontWeight="Bold" Background="Lime"/>
 
     </Grid>
 </Window>
