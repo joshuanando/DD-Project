@@ -140,11 +140,11 @@ namespace ProjectDD
             switch (CRUD_CB.SelectedItem.ToString())
             {
                 case "Insert":
-                    Master.Kategori_Sparepart.Kategori_Sparepart_Insert sk = new Master.Kategori_Sparepart.Kategori_Sparepart_Insert();
+                    Master.Kategori_Tools.Kategori_Tools_Insert sk = new Master.Kategori_Tools.Kategori_Tools_Insert();
                     sk.Show();
                     break;
                 case "Update":
-                    Master.Kategori_Sparepart.Kategori_Sparepart_Update usk = new Master.Kategori_Sparepart.Kategori_Sparepart_Update();
+                    Master.Kategori_Tools.Kategori_Tools_Update usk = new Master.Kategori_Tools.Kategori_Tools_Update();
                     usk.Show();
                     break;
                 case "Delete":
