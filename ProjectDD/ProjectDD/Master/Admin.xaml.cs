@@ -88,7 +88,8 @@ namespace ProjectDD
 
         private void btnHistory_Clicked(object sender, RoutedEventArgs e)
         {
-
+            Master.History.history pHistory = new Master.History.history();
+            pHistory.Show();
         }
 
         private void btnProduct_Clicked(object sender, RoutedEventArgs e)
@@ -97,15 +98,6 @@ namespace ProjectDD
             mprod.Show();
         }
 
-        private void btnStok_Clicked(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void btnKategori_Clicked(object sender, RoutedEventArgs e)
-        {
-
-        }
 
         private void go_button_Click(object sender, RoutedEventArgs e)
         {

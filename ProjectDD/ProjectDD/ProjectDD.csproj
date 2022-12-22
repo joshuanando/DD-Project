@@ -72,6 +72,9 @@
     <Compile Include="Kasir\Kasir.xaml.cs">
       <DependentUpon>Kasir.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Master\History\history.xaml.cs">
+      <DependentUpon>history.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Master\Kategori_Sparepart\Kategori_Sparepart_Delete.xaml.cs">
       <DependentUpon>Kategori_Sparepart_Delete.xaml</DependentUpon>
     </Compile>
@@ -115,6 +118,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Master\History\history.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Master\Kategori_Sparepart\Kategori_Sparepart_Delete.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
