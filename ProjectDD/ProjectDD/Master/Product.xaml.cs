@@ -50,7 +50,7 @@ namespace ProjectDD.Master
             cbCabang.SelectedItem = cbCabang.Items[giliran];
         }
 
-        private void load_tools()
+        private void load_sparepart()
         {
             connection.openConn();
             OracleCommand cmd = new OracleCommand();
@@ -69,7 +69,7 @@ namespace ProjectDD.Master
         {
             try
             {
-                load_tools();
+                load_sparepart();
             }
             catch (Exception ex)
             {
@@ -82,13 +82,6 @@ namespace ProjectDD.Master
         {
             try
             {
-                //for (int i = 0; i < dgProduct.Items.Count; i++)
-                //{
-                //    DataGridRow row = (DataGridRow)dgProduct.ItemContainerGenerator.ContainerFromIndex(i);
-
-                //    TextBlock t_name = dgProduct.Columns[0].GetCellContent(row) as TextBlock;
-                //    TextBlock t_type = dgProduct.Columns[1].GetCellContent(row) as TextBlock;
-                //}
                 DataRowView dataRowView = (DataRowView)((Button)e.Source).DataContext;
                 if (CustomMessageBox.ShowOKCancel(
                     "ID Sparepart: "+ dataRowView[0].ToString()+"\n"+
@@ -99,7 +92,7 @@ namespace ProjectDD.Master
                     "Update / Delete Sparepart",
                     "Update!",
                     "Delete!") == MessageBoxResult.OK){
-                    MessageBox.Show("OK");
+                    
                 }else{
                     if (MessageBox.Show("Are you sure want to DELETE this item?",
                     "Delete Sparepart",
@@ -115,6 +108,12 @@ namespace ProjectDD.Master
                 MessageBox.Show(ex.Message);
                 connection.closeConn();
             }
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            Master.Sparepart.insertSparepart ins_sparepart = new Master.Sparepart.insertSparepart();
+            ins_sparepart.Show();
         }
     }
 }

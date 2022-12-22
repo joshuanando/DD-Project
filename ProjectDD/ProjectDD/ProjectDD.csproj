@@ -96,6 +96,9 @@
     <Compile Include="Master\Product.xaml.cs">
       <DependentUpon>Product.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Master\Sparepart\insertSparepart.xaml.cs">
+      <DependentUpon>insertSparepart.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Master\view_Spareparts.xaml.cs">
       <DependentUpon>view_Spareparts.xaml</DependentUpon>
     </Compile>
@@ -104,6 +107,7 @@
     </Compile>
     <Compile Include="Sparepart.cs" />
     <Compile Include="Tools.cs" />
+    <Compile Include="Tools_Category.cs" />
     <Page Include="Master\Admin.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -153,6 +157,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Master\Product.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Master\Sparepart\insertSparepart.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
