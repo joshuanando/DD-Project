@@ -77,6 +77,7 @@ CREATE TABLE HTRANS (
 	NO_POLISI VARCHAR2(20),
 	DESKRIPSI_KENDARAAN VARCHAR2(100),
 	TOTAL NUMBER,
+	DARI_CABANG VARCHAR2(10) DEFAULT '-',
 	STATUS NUMBER(1) DEFAULT 0
 );
 
@@ -88,6 +89,15 @@ CREATE TABLE DTRANS (
 	HARGA_ITEM NUMBER,
 	JUMLAH NUMBER,
 	FOREIGN KEY (ID_HTRANS) REFERENCES HTRANS(ID_Transaksi)
+);
+
+create table history_stok(
+    id varchar2(10),
+    nama_barang varchar2(20),
+    stok_sebelum number(3),
+    stok_sesudah number(3),
+    keterangan varchar2(30),
+    tanggal date
 );
 
 --------------------TRIGGERS--------------------------
@@ -309,6 +319,55 @@ END autoSumHtrans;
 show err;
 COMMIT;
 
+--id history stok
+Create or replace Trigger autoIdHistoryStok
+before insert 
+    on history_stok
+    for each row
+declare 
+    temp_id varchar2(10);
+	localid VARCHAR2(10);
+    err exception;
+begin
+	select max(id) into temp_id from history_stok;
+	select '&LOCALID' into localid from dual;	
+	
+	if temp_id IS NULL then
+		temp_id:=1;
+	ELSE 
+	temp_id := substr(temp_id,-3,3)+1;
+	end if;
+	:new.id := localid || '/H' ||lpad(temp_id,3,'0');
+exception 
+    when err then raise_application_error(-20008,'hangus');
+END;
+/
+show err;
+
+--trigger update history
+Create or replace Trigger updateStokHistory
+after update 
+    on sparepart
+    for each row
+declare 
+    temp_new number(3);
+    temp_old number(3);
+    err exception;
+begin
+    temp_new := :new.stok;
+    temp_old := :old.stok;
+    if( temp_new > temp_old) then
+        insert into history_stok values('',:new.name,:old.stok ,:new.stok,'restok barang', current_date);  
+    else
+        insert into history_stok values('',:new.name,:old.stok ,:new.stok,'barang terpakai/terjual', current_date);
+    end if;
+    
+exception 
+    when err then raise_application_error(-20009,'hangus');
+END;
+/
+show err;
+
 
 ----------------------------------------------
 
@@ -513,6 +572,7 @@ GRANT SELECT ON TOOLS_CABJON TO KASIR;
 GRANT SELECT ON TOOLS_CABDAVE TO KASIR;
 GRANT SELECT ON TOOLS_CABNANDO TO KASIR;
 GRANT SELECT ON ITEMS TO KASIR;
+GRANT EXECUTE ON nextHtransId TO Kasir;
 
 -- Dbms_Scheduler.Drop_Job (Job_Name => 'REFRESH')
 
