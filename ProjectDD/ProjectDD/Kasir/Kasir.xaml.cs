@@ -12,6 +12,7 @@ namespace ProjectDD
     /// <summary>
     /// Interaction logic for Kasir.xaml
     /// </summary>
+    /// 
     public partial class Kasir : Window
     {
         OracleConnection conn;
@@ -19,8 +20,6 @@ namespace ProjectDD
         bool isupdating = false;
         string[] listview = { "View Tools", "View Sparepart" };
         List<Item> listitem = new List<Item>();
-        List<Item> listbuyitem = new List<Item>();
-
         List<db_cab> listcabang = new List<db_cab>()
         {
             new db_cab() { nama_cabang = "-", nama_db = ""},
@@ -29,7 +28,26 @@ namespace ProjectDD
             new db_cab() { nama_cabang = "cabnando", nama_db = ""},
             new db_cab() { nama_cabang = "cabjon", nama_db = ""},
         };
+        DataTable dt_listbuyitem = new DataTable();
+        List<String> deletedDtransId = new List<String>();
 
+        string active_cab = "";
+        private class DTrans
+        {
+            public String id_htrans { set; get; }
+            public String id_item { set; get; }
+            public String nama_item { set; get; }
+            public long harga_item { set; get; }
+            public long jumlah { set; get; }
+            public DTrans(string id_htrans, string id_item, string nama_item, long harga_item, long jumlah)
+            {
+                this.id_htrans = id_htrans;
+                this.id_item = id_item;
+                this.nama_item = nama_item;
+                this.harga_item = harga_item;
+                this.jumlah = jumlah;
+            }
+        }
         public Kasir(OracleConnection c)
         {
             InitializeComponent();
@@ -39,9 +57,9 @@ namespace ProjectDD
             date_end.SelectedDate = DateTime.Now;
             init();
         }
-
         private void init()
         {
+            connection.openConn();
             load_history();
             label_cabang.Content = "Welcome Kasir of " + connection.cabangnow;
             for (int i = 0; i < listview.Length; i++)
@@ -55,6 +73,10 @@ namespace ProjectDD
             cb_trans_cab.DisplayMemberPath = "nama_cabang";
             cb_trans_cab.SelectedValuePath = "nama_cabang";
             cb_trans_cab.SelectedItem = cb_trans_cab.Items[0];
+            label_ID.Content = "";
+            //settingDataGridListBuy()
+            dt_listbuyitem.Clear();
+            loadListBuyItems();
         }
 
         private void ButtonView_Click(object sender, RoutedEventArgs e)
@@ -77,7 +99,6 @@ namespace ProjectDD
 
         private void load_history()
         {
-            connection.openConn();
             OracleCommand cmd = new OracleCommand();
             cmd.Connection = connection.conn;
             cmd.CommandText = "SELECT * FROM admin.htrans";
@@ -115,7 +136,6 @@ namespace ProjectDD
                 MessageBox.Show(ex.Message);
                 throw;
             }
-            connection.closeConn();
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
@@ -131,15 +151,19 @@ namespace ProjectDD
             if (idx > 0)
             {
                 var rows = GetDataGridRows(dg_history);
+                int ctr = 0;
                 foreach (DataGridRow r in rows)
                 {
-                    //drv = (DataRowView)r.Item; 
-                    foreach (DataGridColumn column in dg_history.Columns)
+                    ctr++;
+                    if (ctr==idx)
                     {
-                        if (column.GetCellContent(r) is TextBlock)
+                        foreach (DataGridColumn column in dg_history.Columns)
                         {
-                            TextBlock cellContent = column.GetCellContent(r) as TextBlock;
-                            rowdata.Add(cellContent.Text);
+                            if (column.GetCellContent(r) is TextBlock)
+                            {
+                                TextBlock cellContent = column.GetCellContent(r) as TextBlock;
+                                rowdata.Add(cellContent.Text);
+                            }
                         }
                     }
                 }
@@ -152,8 +176,13 @@ namespace ProjectDD
                 tb_nama.Text = rowdata[2];
                 tb_no_ktp.Text = rowdata[4];
                 tb_no_polisi.Text = rowdata[6];
-                //cb_trans_cab.SelectedItem = ;
+                active_cab = rowdata[10];
+                lb_harga.Content = "Rp. " + rowdata[8];
+                cb_trans_cab.SelectedValue = rowdata[10];
+                cb_trans_cab.IsEnabled = false;
                 chk_status.IsChecked = Convert.ToBoolean(Convert.ToInt32(rowdata[9]));
+                loadListBuyItems();
+                deletedDtransId.Clear();
             }
             // get Dtrans and fill the list
             // listbuyitem
@@ -170,26 +199,123 @@ namespace ProjectDD
             tb_no_ktp.Text = "";
             tb_no_polisi.Text = "";
             chk_status.IsChecked = false;
+            cb_trans_cab.IsEnabled = true;
+            active_cab = "";
+            cb_trans_cab.SelectedIndex = 0;
             listitem = new List<Item>();
+            dt_listbuyitem.Clear();
+            updateTotal();
+            deletedDtransId.Clear();
         }
 
         private void btn_additem_Click(object sender, RoutedEventArgs e)
         {
+            connection.openConn();
+            //MessageBox.Show(dt_listbuyitem.Rows.Count+"");
+            // checking
+            int qty = Convert.ToInt32(tb_qty.Text);
+            String id_htrans = label_ID.Content.ToString();
+
+            if (qty<1)
+            {
+                MessageBox.Show("Jumlah minimal 1");
+                return;
+            }
+            if (dt_listbuyitem.Rows.Count==0) // jika masih kosong tambah
+            {
+                active_cab = cb_trans_cab.SelectedValue as String;
+                cb_trans_cab.IsEnabled = false;
+            }
+            else if(active_cab != cb_trans_cab.SelectedValue as String) // jika salah/ cabang tidak sama
+            {
+                MessageBox.Show("Tidak bisa menambah pesanan yang bersangkutan dengan cabang/sumber berbeda");
+                return;
+            }
             // add item to list items
             // check qty first if adding new transaction
-
-            if (cb_item.SelectedValue != null)
+            // get item details
+            try
             {
-                Item i = listitem[cb_item.SelectedIndex];
-                i.status = "@" + tb_qty.Text;
-                listbuyitem.Add(i);
+                String id_item = cb_item.SelectedValue.ToString();
+                OracleCommand cmd = new OracleCommand();
+                cmd.Connection = connection.conn;
+                cmd.CommandText = $"SELECT status FROM admin.ITEMS where id='{id_item}'";
+                String status = cmd.ExecuteScalar() as String;
+                if (status == "Not Available")
+                {
+                    MessageBox.Show("Item/Tools sedang tidak dapat digunakan");
+                    return;
+                }else if (status == "Available") { /*allow*/ }
+                else if (Convert.ToInt32(status.Substring(1)) < qty)
+                {
+                    MessageBox.Show("Stok item < jumlah permintaan");
+                    return;
+                }
+                cmd = new OracleCommand();
+                cmd.Connection = connection.conn;
+                cmd.CommandText = $"SELECT nama FROM admin.ITEMS where id='{id_item}'";
+                String nama = cmd.ExecuteScalar() as String;
+                cmd = new OracleCommand();
+                cmd.Connection = connection.conn;
+                cmd.CommandText = $"SELECT harga FROM admin.ITEMS where id='{id_item}'";
+                long harga = Convert.ToInt64(cmd.ExecuteScalar());
+                if (!isupdating)
+                {
+                    id_htrans = getNextHtrans();
+                }
+                if (cb_item.SelectedValue != null)
+                {
+                    //DTrans item = new DTrans(id_htrans, id_item, nama, harga, qty);
+                    DataRow dr = dt_listbuyitem.NewRow();
+                    dr[0] = "";
+                    dr[1] = id_htrans;
+                    dr[2] = id_item;
+                    dr[3] = nama;
+                    dr[4] = harga;
+                    dr[5] = qty;
+                    dt_listbuyitem.Rows.Add(dr);
+                    dg_listbuy.ItemsSource = dt_listbuyitem.DefaultView;
+                    updateTotal();
+                    settingDataGridListBuy();
+                }
             }
-            updateListBuyItems();
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
-        private void updateListBuyItems()
+
+        // untuk LISTBUYITEM
+        OracleDataAdapter da_listitem;
+        OracleCommandBuilder builder;
+        private void loadListBuyItems()
         {
-            //load listbuyitem to dg_listbuy
-            dg_listbuy.ItemsSource = listbuyitem;
+            String idHtrans = label_ID.Content.ToString();
+            if (idHtrans.Length>0)
+            {
+                //load listbuyitem to dg_listbuy
+                da_listitem = new OracleDataAdapter($"select * from admin.dtrans where id_htrans='{idHtrans}'", conn);
+                builder = new OracleCommandBuilder(da_listitem);
+                dt_listbuyitem = new DataTable();
+                da_listitem.Fill(dt_listbuyitem);
+                dg_listbuy.ItemsSource = dt_listbuyitem.DefaultView;
+            }
+            else
+            {
+                dg_listbuy.ItemsSource = dt_listbuyitem.DefaultView;
+            }
+            settingDataGridListBuy();
+            updateTotal();
+        }
+
+        private void updateTotal()
+        {
+            long sum = 0;
+            foreach (DataRowView row in dg_listbuy.ItemsSource)
+            {
+                sum += Convert.ToInt64(row["HARGA_ITEM"]);
+            }
+            lb_harga.Content = "Rp." + sum;
         }
 
         private void btn_submit_Click(object sender, RoutedEventArgs e)
@@ -197,10 +323,33 @@ namespace ProjectDD
             // submit current, add or update
             if (isupdating)
             {
-
+                using (OracleTransaction trans = conn.BeginTransaction())
+                {
+                    try
+                    {
+                        OracleCommand cmd = new OracleCommand();
+                        cmd.Connection = conn;
+                        /*cmd.CommandText = "update dtrans set id_item=:a,nama_item=:b,harga_item=:c,jumlah=:d, where id:=e";
+                        cmd.Parameters.Add(":a", id_item);
+                        cmd.Parameters.Add(":b", nama_item);
+                        cmd.Parameters.Add(":c", harga_item);
+                        cmd.Parameters.Add(":d", jumlah);
+                        cmd.Parameters.Add(":e", id_dtrans);
+                        cmd.ExecuteNonQuery();*/
+                        da_listitem.Update(dt);
+                        trans.Commit();
+                        MessageBox.Show("Berhasil Update");
+                        deletedDtransId.Clear();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message);
+                        trans.Rollback();
+                    }
+                }
             }
             else {
-
+                
             }
         }
 
@@ -211,6 +360,8 @@ namespace ProjectDD
         }
         private void loadcb(string cabang)
         {
+            listitem.Clear();
+            connection.openConn();
             //cbParam.Items.Add("Everyone");
             String query = "select * from admin.items";
             if (cabang!="-")
@@ -221,7 +372,6 @@ namespace ProjectDD
             {
                 OracleCommand cmd = new OracleCommand(query, conn);
                 OracleDataReader reader;
-                conn.Open();
                 reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
@@ -231,19 +381,17 @@ namespace ProjectDD
                     String status = reader["STATUS"].ToString();
                     listitem.Add(new Item(id, $"{nama} - {status} - {kategori}") { status = status });
                 }
-                cb_item.Items.Clear();
                 cb_item.ItemsSource = listitem;
                 cb_item.DisplayMemberPath = "nama";
                 cb_item.SelectedValuePath = "id";
                 cb_item.SelectedItem = cb_item.Items[0];
                 reader.Close();
-                conn.Close();
             }
             catch(Exception ex)
             {
-                MessageBox.Show(ex.Message);
-                conn.Close();
-            }            
+                MessageBox.Show(ex.Message); 
+                cb_trans_cab.SelectedItem = cb_item.Items[0];
+            }
         }
         private void ComboBox_SelectionUpdate(object sender, KeyEventArgs e)
         {
@@ -261,6 +409,66 @@ namespace ProjectDD
             {
                 var row = grid.ItemContainerGenerator.ContainerFromItem(item) as DataGridRow;
                 if (null != row) yield return row;
+            }
+        }
+
+        public string getNextHtrans()
+        {
+            connection.openConn();
+            OracleCommand cmd = new OracleCommand();
+            cmd.Connection = connection.conn;
+            cmd.CommandText = "select admin.nexthtransid from dual";
+            return cmd.ExecuteScalar().ToString();
+        }
+
+        public void settingDataGridListBuy()
+        {
+            if (dt_listbuyitem.Columns.Count==0)
+            {
+                dt_listbuyitem.Columns.Add(new DataColumn());
+                dt_listbuyitem.Columns.Add(new DataColumn());
+                dt_listbuyitem.Columns.Add(new DataColumn());
+                dt_listbuyitem.Columns.Add(new DataColumn());
+                dt_listbuyitem.Columns.Add(new DataColumn());
+                dt_listbuyitem.Columns.Add(new DataColumn());
+            }
+            dt_listbuyitem.Columns[0].ColumnName = "ID";
+            dt_listbuyitem.Columns[0].ReadOnly = true;
+            dt_listbuyitem.Columns[0].ColumnMapping=MappingType.Hidden;
+            dt_listbuyitem.Columns[1].ColumnName = "ID_HTRANS";
+            dt_listbuyitem.Columns[1].ReadOnly = true;
+            dt_listbuyitem.Columns[1].ColumnMapping = MappingType.Hidden;
+            dt_listbuyitem.Columns[2].ColumnName = "ID_ITEM";
+            dt_listbuyitem.Columns[2].ReadOnly = true;
+            dt_listbuyitem.Columns[3].ColumnName = "NAMA_ITEM";
+            dt_listbuyitem.Columns[3].ReadOnly = true;
+            dt_listbuyitem.Columns[4].ColumnName = "HARGA_ITEM";
+            dt_listbuyitem.Columns[4].ReadOnly = true;
+            dt_listbuyitem.Columns[5].ColumnName = "JUMLAH";
+            dt_listbuyitem.Columns[4].ReadOnly = false;
+            //dt_listbuyitem.AcceptChanges();
+        }
+
+        private void dg_listbuy_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            IInputElement element = e.MouseDevice.DirectlyOver;
+            if (element != null && element is FrameworkElement)
+            {
+                if (((FrameworkElement)element).Parent is DataGridCell)
+                {
+                    var grid = sender as DataGrid;
+                    if (grid != null && grid.SelectedItems != null && grid.SelectedItems.Count == 1)
+                    {
+                        var rowview = grid.SelectedItem as DataRowView;
+                        if (rowview != null)
+                        {
+                            DataRow row = rowview.Row;
+                            deletedDtransId.Add(row[0] as String);
+                            dt_listbuyitem.Rows.Remove(row);
+                            updateTotal();
+                        }
+                    }
+                }
             }
         }
     }
