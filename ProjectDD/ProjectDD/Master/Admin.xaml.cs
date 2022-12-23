@@ -81,11 +81,6 @@ namespace ProjectDD
             }
         }
 
-        private void btnCheck_Clicked(object sender, RoutedEventArgs e)
-        {
-
-        }
-
         private void btnHistory_Clicked(object sender, RoutedEventArgs e)
         {
             Master.History.history pHistory = new Master.History.history();
