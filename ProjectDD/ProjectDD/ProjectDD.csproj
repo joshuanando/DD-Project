@@ -99,6 +99,12 @@
     <Compile Include="Master\Sparepart\insertSparepart.xaml.cs">
       <DependentUpon>insertSparepart.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Master\Tools\insert_tools.xaml.cs">
+      <DependentUpon>insert_tools.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Master\Tools\Tools.xaml.cs">
+      <DependentUpon>Tools.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Master\view_Spareparts.xaml.cs">
       <DependentUpon>view_Spareparts.xaml</DependentUpon>
     </Compile>
@@ -161,6 +167,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Master\Sparepart\insertSparepart.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Master\Tools\insert_tools.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Master\Tools\Tools.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

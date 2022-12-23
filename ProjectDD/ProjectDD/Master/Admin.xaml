@@ -16,6 +16,7 @@
         <Button x:Name="go_button" Content="Action" HorizontalAlignment="Left" Margin="357,163,0,0" VerticalAlignment="Top" Width="66" Height="22"  Click="go_button_Click" />
         <ComboBox x:Name="CRUD_CB" HorizontalAlignment="Left" Margin="186,163,0,0" VerticalAlignment="Top" Width="163"/>
         <ComboBox x:Name="TableCB" HorizontalAlignment="Left" Margin="11,163,0,0" VerticalAlignment="Top" Width="163"/>
+        <Button x:Name="btnTools" Content="Tools" HorizontalAlignment="Left" Margin="189,11,0,0" VerticalAlignment="Top" Width="74" Click="btnTools_Clicked"/>
 
     </Grid>
 </Window>

@@ -1,0 +1,19 @@
+﻿<Window x:Class="ProjectDD.Master.Tools.Tools"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ProjectDD.Master.Tools"
+        mc:Ignorable="d"
+        Title="Tools" Height="450" Width="800">
+    <Grid>
+        <Label Content="List Tools" HorizontalAlignment="Left" Margin="21,49,0,0" VerticalAlignment="Top" FontSize="36"/>
+        <Button x:Name="btnBackTools" Content="Back" HorizontalAlignment="Left" Margin="23,19,0,0" VerticalAlignment="Top" Width="74" Click="btnBackTools_Clicked"/>
+        <DataGrid x:Name="dgTools" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="20,116,21,24"/>
+        <Button x:Name="btnInsertTools" Content="Insert" Width="75" HorizontalAlignment="Left" Margin="700,77,0,0" VerticalAlignment="Top" Click="btnInsertTools_Clicked"/>
+        <Label Content="Pada Cabang:" HorizontalAlignment="Left" Margin="190,71,0,0" VerticalAlignment="Top"/>
+        <ComboBox x:Name="cbCabangTools" HorizontalAlignment="Left" Margin="285,75,0,0" VerticalAlignment="Top" Width="120"/>
+        <Button x:Name="btnTampilTools" Content="Tampilkan" HorizontalAlignment="Left" Margin="410,75,0,0" VerticalAlignment="Top" Width="75" Height="22" HorizontalContentAlignment="Center" Click="btnTampilTools_Clicked"/>
+
+    </Grid>
+</Window>

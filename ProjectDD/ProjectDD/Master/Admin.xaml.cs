@@ -150,5 +150,11 @@ namespace ProjectDD
                     break;
             }
         }
+
+        private void btnTools_Clicked(object sender, RoutedEventArgs e)
+        {
+            Master.Tools.Tools pTools = new Master.Tools.Tools();
+            pTools.Show();
+        }
     }
 }
