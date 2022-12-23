@@ -66,7 +66,7 @@ namespace ProjectDD.Master
             connection.openConn();
             OracleCommand cmd = new OracleCommand();
             cmd.Connection = connection.conn;
-            cmd.CommandText = "SELECT * FROM " + cabang_cb.SelectedValue.ToString();
+            cmd.CommandText = "SELECT * FROM " + cabang_cb.SelectedValue.ToString() + " ORDER BY ID_SPARE ASC";
             //MessageBox.Show(cmd.CommandText);
             dt = new DataTable();
             cmd.ExecuteNonQuery();

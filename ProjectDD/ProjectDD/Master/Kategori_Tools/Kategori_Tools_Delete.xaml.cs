@@ -38,7 +38,7 @@ namespace ProjectDD.Master.Kategori_Tools
             connection.openConn();
             OracleCommand cmd = new OracleCommand();
             cmd.Connection = connection.conn;
-            cmd.CommandText = "SELECT * FROM TOOLS_CATEGORY";
+            cmd.CommandText = "SELECT * FROM TOOLS_CATEGORY ORDER BY ID_CATEGORY ASC";
             //MessageBox.Show(cmd.CommandText);
             dt = new DataTable();
             cmd.ExecuteNonQuery();
