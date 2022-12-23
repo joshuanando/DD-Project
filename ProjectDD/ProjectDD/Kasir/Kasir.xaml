@@ -12,7 +12,7 @@
             <RowDefinition Height="105*"/>
             <RowDefinition Height="32"/>
             <RowDefinition Height="11*"/>
-            <RowDefinition Height="222*"/>
+            <RowDefinition Height="222"/>
         </Grid.RowDefinitions>
         <GroupBox Header="Transaction" HorizontalAlignment="Left" Height="358" Margin="10,2,0,0" VerticalAlignment="Top" Width="391" Grid.Row="1" Grid.RowSpan="4">
             <Label x:Name="lb_harga" Content="Rp. 0" HorizontalAlignment="Left" Margin="239,308,0,0" VerticalAlignment="Top" Height="27" Width="131"/>
@@ -52,18 +52,20 @@
         <CheckBox x:Name="chk_status"  Content="FINISHED" HorizontalAlignment="Left" Margin="307,20,0,0" VerticalAlignment="Top" Grid.Row="1"/>
         <Label Content="Nama Pemilik" HorizontalAlignment="Left" Margin="29,36,0,0" VerticalAlignment="Top" Grid.Row="1" Padding="1"/>
         <TextBox x:Name="tb_nama" HorizontalAlignment="Left" Height="16" Margin="116,37,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="268" Grid.Row="1"/>
-        <Label Content="Alamat Pemilik" HorizontalAlignment="Left" Margin="29,57,0,0" VerticalAlignment="Top" Grid.Row="1" Padding="1"/>
-        <TextBox x:Name="tb_alamat" HorizontalAlignment="Left" Height="16" Margin="116,58,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="268" Grid.Row="1"/>
-        <Label Content="No KTP" HorizontalAlignment="Left" Margin="29,78,0,0" VerticalAlignment="Top" Grid.Row="1" Padding="1"/>
-        <TextBox x:Name="tb_no_ktp" HorizontalAlignment="Left" Height="16" Margin="116,79,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="268" Grid.Row="1"/>
-        <Label Content="No Polisi" HorizontalAlignment="Left" Margin="29,99,0,0" VerticalAlignment="Top" Grid.Row="1" Padding="1" Grid.RowSpan="2"/>
-        <TextBox x:Name="tb_no_polisi" HorizontalAlignment="Left" Height="16" Margin="116,100,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="268" Grid.Row="1" Grid.RowSpan="2"/>
-        <Label Content="Deskripsi" HorizontalAlignment="Left" Margin="29,15,0,0" VerticalAlignment="Top" Grid.Row="2" Padding="1" Grid.RowSpan="2"/>
-        <TextBox x:Name="tb_deskripsi" HorizontalAlignment="Left" Height="37" Margin="116,16,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="268" Grid.Row="2" Grid.RowSpan="3" AcceptsReturn="True"/>
+        <Label Content="Alamat Pemilik" HorizontalAlignment="Left" Margin="29,56,0,0" VerticalAlignment="Top" Grid.Row="1" Padding="1"/>
+        <TextBox x:Name="tb_alamat" HorizontalAlignment="Left" Height="16" Margin="116,57,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="268" Grid.Row="1"/>
+        <Label Content="No KTP" HorizontalAlignment="Left" Margin="29,76,0,0" VerticalAlignment="Top" Grid.Row="1" Padding="1"/>
+        <TextBox x:Name="tb_no_ktp" HorizontalAlignment="Left" Height="16" Margin="116,77,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="268" Grid.Row="1"/>
+        <Label Content="No Polisi" HorizontalAlignment="Left" Margin="29,97,0,0" VerticalAlignment="Top" Grid.Row="1" Padding="1" Grid.RowSpan="2"/>
+        <TextBox x:Name="tb_no_polisi" HorizontalAlignment="Left" Height="16" Margin="116,98,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="268" Grid.Row="1" Grid.RowSpan="2"/>
+        <Label Content="Deskripsi" HorizontalAlignment="Left" Margin="29,2,0,0" VerticalAlignment="Top" Grid.Row="3" Padding="1" Grid.RowSpan="2"/>
+        <TextBox x:Name="tb_deskripsi" HorizontalAlignment="Left" Height="19" Margin="116,2,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="268" Grid.Row="3" Grid.RowSpan="2" AcceptsReturn="True"/>
         <ComboBox x:Name="cb_trans_cab" HorizontalAlignment="Left" Margin="116,15,0,0" VerticalAlignment="Top" Width="120" Grid.Row="4" Height="20" SelectionChanged="cb_trans_cab_SelectionChanged"/>
         <Label Content="Cabang" HorizontalAlignment="Left" Margin="26,11,0,0" VerticalAlignment="Top" Grid.Row="4"/>
         <DataGrid x:Name="dg_listbuy" HorizontalAlignment="Left" Height="95" Margin="25,68,0,0" VerticalAlignment="Top" Width="360" Grid.Row="4" AutoGenerateColumns="True" CanUserReorderColumns="False" CanUserAddRows="False" ItemsSource="{Binding}" MouseDoubleClick="dg_listbuy_MouseDoubleClick" IsReadOnly="True"/>
         <Label Content="*Double click untuk delete" HorizontalAlignment="Left" Margin="242,157,0,0" VerticalAlignment="Top" Grid.Row="4" FontSize="9"/>
+        <Label Content="NPWP" HorizontalAlignment="Left" Margin="26,7,0,0" VerticalAlignment="Top" Grid.Row="2" Grid.RowSpan="2"/>
+        <TextBox x:Name="tb_npwp" HorizontalAlignment="Left" Height="17" Margin="116,12,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="268" Grid.Row="2"/>
 
     </Grid>
 </Window>

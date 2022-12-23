@@ -175,12 +175,13 @@ namespace ProjectDD
                 tb_deskripsi.Text = rowdata[7];
                 tb_nama.Text = rowdata[2];
                 tb_no_ktp.Text = rowdata[4];
+                tb_npwp.Text = rowdata[5];
                 tb_no_polisi.Text = rowdata[6];
                 active_cab = rowdata[10];
                 lb_harga.Content = "Rp. " + rowdata[8];
-                cb_trans_cab.SelectedValue = rowdata[10];
+                cb_trans_cab.SelectedValue = rowdata[9];
                 cb_trans_cab.IsEnabled = false;
-                chk_status.IsChecked = Convert.ToBoolean(Convert.ToInt32(rowdata[9]));
+                chk_status.IsChecked = Convert.ToBoolean(Convert.ToInt32(rowdata[10]));
                 loadListBuyItems();
                 deletedDtransId.Clear();
             }
@@ -188,7 +189,7 @@ namespace ProjectDD
             // listbuyitem
         }
 
-        private void btn_cancel_Click(object sender, RoutedEventArgs e)
+        private void clearALL()
         {
             isupdating = false;
             label_action.Content = "Add";
@@ -198,6 +199,7 @@ namespace ProjectDD
             tb_nama.Text = "";
             tb_no_ktp.Text = "";
             tb_no_polisi.Text = "";
+            tb_npwp.Text = "";
             chk_status.IsChecked = false;
             cb_trans_cab.IsEnabled = true;
             active_cab = "";
@@ -206,6 +208,10 @@ namespace ProjectDD
             dt_listbuyitem.Clear();
             updateTotal();
             deletedDtransId.Clear();
+        }
+        private void btn_cancel_Click(object sender, RoutedEventArgs e)
+        {
+            clearALL();
         }
 
         private void btn_additem_Click(object sender, RoutedEventArgs e)
@@ -308,7 +314,7 @@ namespace ProjectDD
             updateTotal();
         }
 
-        private void updateTotal()
+        private long updateTotal()
         {
             long sum = 0;
             foreach (DataRowView row in dg_listbuy.ItemsSource)
@@ -316,11 +322,19 @@ namespace ProjectDD
                 sum += Convert.ToInt64(row["HARGA_ITEM"]);
             }
             lb_harga.Content = "Rp." + sum;
+            return sum;
         }
 
         private void btn_submit_Click(object sender, RoutedEventArgs e)
         {
+            if (dt_listbuyitem.Rows.Count==0)
+            {
+                MessageBox.Show("Harus ada item yang ditambahkan");
+                return;
+            }
+            connection.openConn();
             // submit current, add or update
+            //drop deletedDtransId
             if (isupdating)
             {
                 using (OracleTransaction trans = conn.BeginTransaction())
@@ -335,8 +349,8 @@ namespace ProjectDD
                         cmd.Parameters.Add(":c", harga_item);
                         cmd.Parameters.Add(":d", jumlah);
                         cmd.Parameters.Add(":e", id_dtrans);
-                        cmd.ExecuteNonQuery();*/
-                        da_listitem.Update(dt);
+                        cmd.ExecuteNonQuery();
+                        da_listitem.Update(dt);*/
                         trans.Commit();
                         MessageBox.Show("Berhasil Update");
                         deletedDtransId.Clear();
@@ -349,8 +363,132 @@ namespace ProjectDD
                 }
             }
             else {
-                
+                //htrans
+                using (OracleTransaction trans = connection.conn.BeginTransaction())
+                {
+                    try
+                    {
+                        OracleCommand cmd = new OracleCommand();
+                        cmd.Connection = connection.conn;
+                        cmd.CommandText = "INSERT INTO ADMIN.HTRANS(ID_Transaksi,Tanggal,NAMA_PEMILIK,ALAMAT_PEMILIK,NO_KTP,NPWP,NO_POLISI,DESKRIPSI_KENDARAAN,TOTAL,DARI_CABANG,STATUS) VALUES('', CURRENT_DATE, :pemilik, :alamat, :noktp, :npwp, :nopolisi, :desk, :total, :cab, :status)";
+                        cmd.CommandType = CommandType.Text;
+                        cmd.Parameters.Add(":pemilik", tb_nama.Text);
+                        cmd.Parameters.Add(":alamat", tb_alamat.Text);
+                        cmd.Parameters.Add(":noktp", tb_no_ktp.Text);
+                        cmd.Parameters.Add(":npwp", tb_npwp.Text);
+                        cmd.Parameters.Add(":nopolisi", tb_no_polisi.Text);
+                        cmd.Parameters.Add(":desk", tb_deskripsi.Text);
+                        cmd.Parameters.Add(":total", updateTotal());
+                        cmd.Parameters.Add(":cab", cb_trans_cab.SelectedValue as String);
+                        cmd.Parameters.Add(":status", chk_status.IsChecked == true ? 1 : 0);
+                        cmd.Transaction = trans;
+                        cmd.ExecuteNonQuery(); ///
+                        //MessageBox.Show(cmd.CommandText);
+                        trans.Commit();
+                        MessageBox.Show("Berhasil");
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message);
+                        trans.Rollback();
+                    }
+                }
+                //dtrans
+                foreach (DataRow r in dt_listbuyitem.Rows)
+                {
+                    using (OracleTransaction trans = connection.conn.BeginTransaction())
+                    {
+                        try
+                        {
+                            OracleCommand cmd = new OracleCommand();
+                            cmd.Connection = connection.conn;
+                            cmd.CommandText = "INSERT INTO ADMIN.DTRANS(ID_HTRANS,ID_ITEM,NAMA_ITEM,HARGA_ITEM,JUMLAH) " +
+                                "VALUES(:id_htrans, :id_item, :nama, :harga, :jumlah)";
+                            cmd.CommandType = CommandType.Text;
+                            cmd.Parameters.Add(":id_htrans", r[1].ToString());
+                            cmd.Parameters.Add(":id_item", r[2].ToString());
+                            cmd.Parameters.Add(":nama", r[3].ToString());
+                            cmd.Parameters.Add(":harga", r[4].ToString());
+                            cmd.Parameters.Add(":jumlah", r[5].ToString());
+                            cmd.Transaction = trans;
+                            cmd.ExecuteNonQuery(); ///
+                            //MessageBox.Show(cmd.CommandText);
+                            //da.Update(dt);
+                            trans.Commit();
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show(ex.Message);
+                            trans.Rollback();
+                        }
+                    }
+                }
+                //update stok 
+                if (chk_status.IsChecked == true)
+                {
+                    foreach (DataRow r in dt_listbuyitem.Rows)
+                    {
+                        bool valid = true;
+                        List<int> liststok = new List<int>();
+
+                        // get status
+                        String id_htrans = label_ID.Content.ToString();
+                        try
+                        {;
+                            OracleCommand cmd = new OracleCommand();
+                            cmd.Connection = connection.conn;
+                            cmd.CommandText = $"SELECT status FROM admin.ITEMS where id='{r[2].ToString()}'";
+                            String status = cmd.ExecuteScalar() as String;
+                            if (status == "Not Available")
+                            {
+                                MessageBox.Show("Item/Tools sedang tidak dapat digunakan");
+                            }
+                            else if (status == "Available") { 
+                                // if TOOLS / status not changed (change in admin)
+                            }
+                            else if (Convert.ToInt32(status.Substring(1)) < Convert.ToInt32(r[5].ToString()))
+                            {
+                                MessageBox.Show("Stok item < jumlah permintaan untuk "+ r[3].ToString()); 
+                            }
+                            else // IF SPAREPART
+                            {
+                                int stok = Convert.ToInt32(status.Substring(1));
+                                int newstok = stok - Convert.ToInt32(r[5].ToString());
+                                
+                                using (OracleTransaction trans = connection.conn.BeginTransaction())
+                                {
+                                    try
+                                    {
+                                        cmd = new OracleCommand();
+                                        cmd.Connection = connection.conn;
+                                        cmd.CommandText = "UPDATE ADMIN.SPAREPART SET STOK=:newstok WHERE ID_SPARE=:id_spare";
+                                        cmd.CommandType = CommandType.Text;
+                                        cmd.Parameters.Add(":newstok", newstok);
+                                        cmd.Parameters.Add(":id_spare", r[2].ToString());
+                                        cmd.Transaction = trans;
+                                        cmd.ExecuteNonQuery(); ///
+                                        //MessageBox.Show(cmd.CommandText);
+                                        //da.Update(dt);
+                                        trans.Commit();
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        MessageBox.Show(ex.Message);
+                                        trans.Rollback();
+                                    }
+                                }
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show(ex.Message);
+                        }
+                    }
+                }
+                clearALL();
+                load_history();
             }
+            loadcb(cb_trans_cab.SelectedValue.ToString());
         }
 
         private void cb_trans_cab_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -464,6 +602,7 @@ namespace ProjectDD
                         {
                             DataRow row = rowview.Row;
                             deletedDtransId.Add(row[0] as String);
+                            MessageBox.Show("deleted dtrans id array length" + deletedDtransId.Count);
                             dt_listbuyitem.Rows.Remove(row);
                             updateTotal();
                         }
