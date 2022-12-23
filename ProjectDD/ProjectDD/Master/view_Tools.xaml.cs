@@ -67,7 +67,7 @@ namespace ProjectDD.Master
             connection.openConn();
             OracleCommand cmd = new OracleCommand();
             cmd.Connection = connection.conn;
-            cmd.CommandText = "SELECT * FROM " + cabang_cb.SelectedValue.ToString() + " ORDER BY ID_TOOLS ASC";
+            cmd.CommandText = "SELECT * FROM ADMIN." + cabang_cb.SelectedValue.ToString() + " ORDER BY ID_TOOLS ASC";
             //MessageBox.Show(cmd.CommandText);
             dt = new DataTable();
             cmd.ExecuteNonQuery();
@@ -98,7 +98,7 @@ namespace ProjectDD.Master
             OracleCommand cmd = new OracleCommand();
             cmd.Connection = connection.conn;
             //cmd.CommandText = "BEGIN dbms_mview.refresh('" + cabang_cb.SelectedValue.ToString() + "',method=>'C'); END;";
-            cmd.CommandText = "BEGIN REFRESH('" + cabang_cb.SelectedValue.ToString() + "'); END;";
+            cmd.CommandText = "BEGIN ADMIN.REFRESH('" + cabang_cb.SelectedValue.ToString() + "'); END;";
             //MessageBox.Show(cmd.CommandText);
             cmd.ExecuteNonQuery();
             connection.closeConn();
