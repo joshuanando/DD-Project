@@ -245,7 +245,7 @@ namespace ProjectDD
                 String id_item = cb_item.SelectedValue.ToString();
                 OracleCommand cmd = new OracleCommand();
                 cmd.Connection = connection.conn;
-                cmd.CommandText = $"SELECT status FROM admin.ITEMS@"+cb_trans_cab.SelectedValue+ $" where id='{id_item}'";
+                cmd.CommandText = $"SELECT status FROM admin.ITEMS_"+cb_trans_cab.SelectedValue+ $" where id='{id_item}'";
                 String status = cmd.ExecuteScalar() as String;
                 if (status == "Not Available")
                 {
@@ -259,11 +259,11 @@ namespace ProjectDD
                 }
                 cmd = new OracleCommand();
                 cmd.Connection = connection.conn;
-                cmd.CommandText = $"SELECT nama FROM admin.ITEMS@" + cb_trans_cab.SelectedValue + $" where id='{id_item}'";
+                cmd.CommandText = $"SELECT nama FROM admin.ITEMS_" + cb_trans_cab.SelectedValue + $" where id='{id_item}'";
                 String nama = cmd.ExecuteScalar() as String;
                 cmd = new OracleCommand();
                 cmd.Connection = connection.conn;
-                cmd.CommandText = $"SELECT harga FROM admin.ITEMS@" + cb_trans_cab.SelectedValue + $" where id='{id_item}'";
+                cmd.CommandText = $"SELECT harga FROM admin.ITEMS_" + cb_trans_cab.SelectedValue + $" where id='{id_item}'";
                 long harga = Convert.ToInt64(cmd.ExecuteScalar());
                 if (!isupdating)
                 {

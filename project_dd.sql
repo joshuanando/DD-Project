@@ -439,6 +439,17 @@ CREATE MATERIALIZED VIEW SPAREPART_cabbry as select S.ID_SPARE,S.NAME,SC.CATEGOR
 CREATE MATERIALIZED VIEW SPAREPART_cabnando as select S.ID_SPARE,S.NAME,SC.CATEGORY_NAME,S.STOK,S.HARGA,S.DESCRIPTION FROM SPAREPART@cabnando S, SPAREPART_CATEGORY@cabnando SC WHERE S.ID_CATEGORY = SC.ID_CATEGORY; 
 
 
+DROP MATERIALIZED VIEW ITEMS_cabdave;
+DROP MATERIALIZED VIEW ITEMS_cabjon;
+DROP MATERIALIZED VIEW ITEMS_cabbry;
+DROP MATERIALIZED VIEW ITEMS_cabnando;
+
+CREATE MATERIALIZED VIEW ITEMS_cabdave as select * FROM ADMIN.ITEMS@cabdave;
+CREATE MATERIALIZED VIEW ITEMS_cabjon as select * FROM ADMIN.ITEMS@cabjon;
+CREATE MATERIALIZED VIEW ITEMS_cabbry as select * FROM ADMIN.ITEMS@cabbry;
+CREATE MATERIALIZED VIEW ITEMS_cabnando as select * FROM ADMIN.ITEMS@cabnando;
+
+
 ----------- INSERT AFTER CREATING ALL MVIEW --------------------
 --------------------PROCEDURE-----------------------------------
 
@@ -540,6 +551,10 @@ BEGIN
     refresh('sparepart_cabjon');
     refresh('sparepart_cabnando');
     refresh('sparepart_cabbry');	
+    refresh('items_cabdave');
+    refresh('items_cabjon');
+    refresh('items_cabnando');
+    refresh('items_cabbry');	
 END;
 /
 show err;
