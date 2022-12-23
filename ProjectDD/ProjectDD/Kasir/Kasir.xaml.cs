@@ -259,11 +259,11 @@ namespace ProjectDD
                 }
                 cmd = new OracleCommand();
                 cmd.Connection = connection.conn;
-                cmd.CommandText = $"SELECT nama FROM admin.ITEMS where id='{id_item}'";
+                cmd.CommandText = $"SELECT nama FROM admin.ITEMS@" + cb_trans_cab.SelectedValue + $" where id='{id_item}'";
                 String nama = cmd.ExecuteScalar() as String;
                 cmd = new OracleCommand();
                 cmd.Connection = connection.conn;
-                cmd.CommandText = $"SELECT harga FROM admin.ITEMS where id='{id_item}'";
+                cmd.CommandText = $"SELECT harga FROM admin.ITEMS@" + cb_trans_cab.SelectedValue + $" where id='{id_item}'";
                 long harga = Convert.ToInt64(cmd.ExecuteScalar());
                 if (!isupdating)
                 {
