@@ -14,6 +14,7 @@ namespace ProjectDD.Master
     public partial class Product : Window
     {
         DataTable dt;
+        OracleConnection conn;
 
         List<db_cab> listcabang = new List<db_cab>()
         {
@@ -23,16 +24,17 @@ namespace ProjectDD.Master
             new db_cab() { nama_cabang = "jon", nama_db = "sparepart_cabjon"},
         };
 
-        public Product()
+        public Product(OracleConnection c)
         {
             InitializeComponent();
+            c = conn;
             init();
         }
 
         public void init()
         {
             //listcabang.RemoveAll(x => x.nama_cabang == connection.cabangnow.Substring(3).ToLower());
-
+            connection.openConn();
             int giliran = 0;
 
             for (int i = 0; i < listcabang.Count; i++)
@@ -52,7 +54,7 @@ namespace ProjectDD.Master
 
         private void load_sparepart()
         {
-            connection.openConn();
+            //connection.openConn();
             OracleCommand cmd = new OracleCommand();
             cmd.Connection = connection.conn;
             cmd.CommandText = "SELECT * FROM " + cbCabang.SelectedValue.ToString();
@@ -112,7 +114,7 @@ namespace ProjectDD.Master
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            Master.Sparepart.insertSparepart ins_sparepart = new Master.Sparepart.insertSparepart();
+            Master.Sparepart.insertSparepart ins_sparepart = new Master.Sparepart.insertSparepart(conn);
             ins_sparepart.Show();
         }
     }

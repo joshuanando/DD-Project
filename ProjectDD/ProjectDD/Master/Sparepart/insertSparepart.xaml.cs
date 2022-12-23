@@ -40,20 +40,25 @@ namespace ProjectDD.Master.Sparepart
             return !_regex.IsMatch(text);
         }
 
-        public insertSparepart()
+        public insertSparepart(OracleConnection c)
         {
             InitializeComponent();
+            conn = c;
             loadKategori();
         }
 
         private void loadKategori()
         {
+            connection.openConn();
             try
             {
                 listkat = new List<Tools_Category>();
                 cbCategorySpare.Items.Clear();
-                OracleCommand cmd = new OracleCommand("select ID, NAMA from tools_category", conn);
-                conn.Open();
+                //OracleCommand cmd = new OracleCommand("select ID, NAMA from tools_category", conn.cabangnow);
+                OracleCommand cmd = new OracleCommand();
+                cmd.Connection = connection.conn;
+                cmd.CommandText = "select ID_CATEGORY, CATEGORY_NAME from admin.sparepart_category";
+                //conn.Open();
                 OracleDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
@@ -63,7 +68,7 @@ namespace ProjectDD.Master.Sparepart
                 cbCategorySpare.ItemsSource = listkat;
                 cbCategorySpare.DisplayMemberPath = "nama";
                 cbCategorySpare.SelectedValuePath = "id";
-                conn.Close();
+                //conn.Close();
             }
             catch (Exception ex)
             {
@@ -86,6 +91,10 @@ namespace ProjectDD.Master.Sparepart
             }else if (richText == "")
             {
                 MessageBox.Show("Field Deskripsi Harap Diisi Terlebih Dahulu!");
+            }
+            else
+            {
+
             }
         }
     }

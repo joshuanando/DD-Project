@@ -89,7 +89,7 @@ namespace ProjectDD
 
         private void btnProduct_Clicked(object sender, RoutedEventArgs e)
         {
-            Master.Product mprod = new Master.Product();
+            Master.Product mprod = new Master.Product(conn);
             mprod.Show();
         }
 
