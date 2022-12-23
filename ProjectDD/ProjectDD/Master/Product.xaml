@@ -23,6 +23,7 @@
         <ComboBox x:Name="cbCabang" HorizontalAlignment="Left" Margin="145,67,0,0" VerticalAlignment="Top" Width="120"/>
         <Button x:Name="btnTampil" Content="Tampilkan" HorizontalAlignment="Left" Margin="270,67,0,0" VerticalAlignment="Top" Width="75" Height="22" HorizontalContentAlignment="Center" Click="btnTampil_Click_1"/>
         <Button x:Name="btnInsertSparepart" Content="(+) Insert" HorizontalAlignment="Left" Margin="665,67,0,0" VerticalAlignment="Top" Width="75" Height="22" FontWeight="Bold" Background="Lime" Click="Button_Click"/>
+        <Button x:Name="btnRefreshSparepart1" Content="Refresh" Width="75" HorizontalAlignment="Left" Margin="355,68,0,0" VerticalAlignment="Top" Click="btnRefreshSparepart1_Clicked"/>
 
     </Grid>
 </Window>

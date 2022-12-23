@@ -72,13 +72,25 @@ namespace ProjectDD.Master.Tools
             connection.openConn();
             OracleCommand cmd = new OracleCommand();
             cmd.Connection = connection.conn;
-            cmd.CommandText = "SELECT * FROM " + cbCabangTools.SelectedValue.ToString();
+            cmd.CommandText = "SELECT * FROM " + cbCabangTools.SelectedValue.ToString() + " Order by id_tools asc";
             //MessageBox.Show(cmd.CommandText);
             dt = new DataTable();
             cmd.ExecuteNonQuery();
             OracleDataAdapter oda = new OracleDataAdapter(cmd);
             oda.Fill(dt);
             dgTools.ItemsSource = dt.DefaultView;
+            connection.closeConn();
+        }
+
+        private void btnRefreshTools_Clicked(object sender, RoutedEventArgs e)
+        {
+            connection.openConn();
+            OracleCommand cmd = new OracleCommand();
+            cmd.Connection = connection.conn;
+            //cmd.CommandText = "BEGIN dbms_mview.refresh('" + cabang_cb.SelectedValue.ToString() + "',method=>'C'); END;";
+            cmd.CommandText = "BEGIN REFRESH('" + cbCabangTools.SelectedValue.ToString() + "'); END;";
+            //MessageBox.Show(cmd.CommandText);
+            cmd.ExecuteNonQuery();
             connection.closeConn();
         }
     }

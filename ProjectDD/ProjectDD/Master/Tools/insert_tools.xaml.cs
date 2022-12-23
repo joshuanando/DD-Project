@@ -103,6 +103,8 @@ namespace ProjectDD.Master.Tools
                     cmd.Transaction = trans;
                     cmd.ExecuteNonQuery();
                     trans.Commit();
+                    MessageBox.Show("berhasil");
+                    this.Hide();
                 }
                 catch (Exception ex)
                 {

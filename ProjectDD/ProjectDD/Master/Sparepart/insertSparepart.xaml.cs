@@ -127,6 +127,8 @@ namespace ProjectDD.Master.Sparepart
                     cmd.Transaction = trans;
                     cmd.ExecuteNonQuery();
                     trans.Commit();
+                    MessageBox.Show("Berhasil");
+                    this.Hide();
                 }
                 catch (Exception ex)
                 {

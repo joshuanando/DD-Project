@@ -57,7 +57,7 @@ namespace ProjectDD.Master
             connection.openConn();
             OracleCommand cmd = new OracleCommand();
             cmd.Connection = connection.conn;
-            cmd.CommandText = "SELECT * FROM " + cbCabang.SelectedValue.ToString();
+            cmd.CommandText = "SELECT * FROM " + cbCabang.SelectedValue.ToString() + " Order by id_spare asc";
             //MessageBox.Show(cmd.CommandText);
             dt = new DataTable();
             cmd.ExecuteNonQuery();
@@ -111,6 +111,20 @@ namespace ProjectDD.Master
         {
             Master.Sparepart.insertSparepart ins_sparepart = new Master.Sparepart.insertSparepart(conn);
             ins_sparepart.Show();
+        }
+
+        
+
+        private void btnRefreshSparepart1_Clicked(object sender, RoutedEventArgs e)
+        {
+            connection.openConn();
+            OracleCommand cmd = new OracleCommand();
+            cmd.Connection = connection.conn;
+            //cmd.CommandText = "BEGIN dbms_mview.refresh('" + cabang_cb.SelectedValue.ToString() + "',method=>'C'); END;";
+            cmd.CommandText = "BEGIN REFRESH('" + cbCabang.SelectedValue.ToString() + "'); END;";
+            //MessageBox.Show(cmd.CommandText);
+            cmd.ExecuteNonQuery();
+            connection.closeConn();
         }
     }
 }

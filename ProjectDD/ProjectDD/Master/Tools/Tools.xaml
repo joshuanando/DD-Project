@@ -14,6 +14,7 @@
         <Label Content="Pada Cabang:" HorizontalAlignment="Left" Margin="190,71,0,0" VerticalAlignment="Top"/>
         <ComboBox x:Name="cbCabangTools" HorizontalAlignment="Left" Margin="285,75,0,0" VerticalAlignment="Top" Width="120"/>
         <Button x:Name="btnTampilTools" Content="Tampilkan" HorizontalAlignment="Left" Margin="410,75,0,0" VerticalAlignment="Top" Width="75" Height="22" HorizontalContentAlignment="Center" Click="btnTampilTools_Clicked"/>
+        <Button x:Name="btnRefreshTools" Content="Refresh" Width="75" HorizontalAlignment="Left" Margin="502,76,0,0" VerticalAlignment="Top" Click="btnRefreshTools_Clicked"/>
 
     </Grid>
 </Window>
