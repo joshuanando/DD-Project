@@ -34,7 +34,7 @@ namespace ProjectDD.Master
         public void init()
         {
             //listcabang.RemoveAll(x => x.nama_cabang == connection.cabangnow.Substring(3).ToLower());
-            connection.openConn();
+            //connection.openConn();
             int giliran = 0;
 
             for (int i = 0; i < listcabang.Count; i++)
@@ -54,11 +54,11 @@ namespace ProjectDD.Master
 
         private void load_sparepart()
         {
-            //connection.openConn();
+            connection.openConn();
             OracleCommand cmd = new OracleCommand();
             cmd.Connection = connection.conn;
             cmd.CommandText = "SELECT * FROM " + cbCabang.SelectedValue.ToString();
-            MessageBox.Show(cmd.CommandText);
+            //MessageBox.Show(cmd.CommandText);
             dt = new DataTable();
             cmd.ExecuteNonQuery();
             OracleDataAdapter oda = new OracleDataAdapter(cmd);
@@ -93,16 +93,11 @@ namespace ProjectDD.Master
                     "Stok: " + dataRowView[3].ToString() + "\n",
                     "Update / Delete Sparepart",
                     "Update!",
-                    "Delete!") == MessageBoxResult.OK){
-                    
+                    "Cancel!") == MessageBoxResult.OK){
+                    //doupdate
+                    //coding
                 }else{
-                    if (MessageBox.Show("Are you sure want to DELETE this item?",
-                    "Delete Sparepart",
-                    MessageBoxButton.YesNo,
-                    MessageBoxImage.Question) == MessageBoxResult.Yes)
-                    {
-                        MessageBox.Show("Deleted!");
-                    }
+                    
                 }
             }
             catch (Exception ex)

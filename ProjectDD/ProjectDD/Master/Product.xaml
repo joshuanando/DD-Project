@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="Product" Height="450" Width="800">
     <Grid>
-        <Label x:Name="lbl_Title" Content="List Product" HorizontalAlignment="Left" Margin="50,10,0,0" VerticalAlignment="Top" FontWeight="Bold" FontSize="22" FontStyle="Italic"/>
+        <Label x:Name="lbl_Title" Content="List Sparepart" HorizontalAlignment="Left" Margin="50,10,0,0" VerticalAlignment="Top" FontWeight="Bold" FontSize="22" FontStyle="Italic"/>
         <DataGrid x:Name="dgProduct" HorizontalAlignment="Left" Height="280" Margin="50,100,0,0" VerticalAlignment="Top" Width="690" IsReadOnly="True">
             <DataGrid.Columns>
                 <DataGridTemplateColumn>

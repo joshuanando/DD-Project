@@ -22,7 +22,7 @@
             </FlowDocument>
         </RichTextBox>
         <Label Content="Harga: " HorizontalAlignment="Left" Margin="45,203,0,0" VerticalAlignment="Top"/>
-        <TextBox PreviewTextInput="txtHarga_PreviewTextInput" x:Name="txtHarga" HorizontalAlignment="Left" Height="23" Margin="98,203,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="230"/>
+        <TextBox PreviewTextInput="txtHarga_PreviewTextInput" x:Name="txtHarga" HorizontalAlignment="Left" Height="23" Margin="99,203,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="230"/>
         <Label Content="Deskripsi: " HorizontalAlignment="Left" Margin="44,238,0,0" VerticalAlignment="Top"/>
         <Button x:Name="btnInsertSparepart" Content="Insert" Margin="158,369,159,0" VerticalAlignment="Top" FontWeight="Bold" Background="Lime" Click="btnInsertSparepart_Click"/>
 
