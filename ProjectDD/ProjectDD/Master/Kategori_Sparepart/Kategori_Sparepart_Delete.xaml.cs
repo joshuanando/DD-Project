@@ -28,7 +28,7 @@ namespace ProjectDD.Master.Kategori_Sparepart
             connection.openConn();
             OracleCommand cmd = new OracleCommand();
             cmd.Connection = connection.conn;
-            cmd.CommandText = "SELECT * FROM SPAREPART_CATEGORY";
+            cmd.CommandText = "SELECT * FROM SPAREPART_CATEGORY ORDER BY ID_CATEGORY ASC";
             //MessageBox.Show(cmd.CommandText);
             dt = new DataTable();
             cmd.ExecuteNonQuery();
