@@ -68,6 +68,7 @@ namespace ProjectDD.Master.Sparepart
                 cbCategorySpare.ItemsSource = listkat;
                 cbCategorySpare.DisplayMemberPath = "nama";
                 cbCategorySpare.SelectedValuePath = "id";
+                cbCategorySpare.SelectedIndex= 0;
                 //conn.Close();
             }
             catch (Exception ex)
@@ -94,7 +95,44 @@ namespace ProjectDD.Master.Sparepart
             }
             else
             {
-
+                OracleTransaction trans;
+                trans = connection.conn.BeginTransaction();
+                try
+                {
+                    string tempCate = cbCategorySpare.SelectedItem.ToString();
+                    string tempId = "";
+                    string tempDesc = new TextRange(rtbDesc.Document.ContentStart, rtbDesc.Document.ContentEnd).Text;
+                    
+                    for (int i = 0; i < listkat.Count; i++)
+                    {
+                        if (tempCate.Equals(listkat[i].ToString()))
+                        {
+                            //MessageBox.Show("asuk pak dave");
+                            tempId = listkat[i].id.ToString();
+                        }
+                    }
+                    //MessageBox.Show(tempId);
+                    //MessageBox.Show(txtName.ToString() + " " + tempId + " " + Convert.ToInt16(txtStok.ToString()) + " " + Convert.ToInt16(txtHarga.ToString()) + " " + rtbDesc.ToString());
+                    string qry = "";
+                    qry = "Insert into admin.sparepart values('',:name,:idCate,:stok,:harga,:deskripsi)";
+                    OracleCommand cmd = new OracleCommand();
+                    cmd.Connection = connection.conn;
+                    cmd.CommandText = qry;
+                    cmd.CommandType = CommandType.Text;
+                    cmd.Parameters.Add(":name", txtName.Text);
+                    cmd.Parameters.Add(":idCate", tempId);
+                    cmd.Parameters.Add(":stok", Convert.ToInt32(txtStok.Text));
+                    cmd.Parameters.Add(":harga", Convert.ToInt32(txtHarga.Text));
+                    cmd.Parameters.Add(":deskripsi", tempDesc);
+                    cmd.Transaction = trans;
+                    cmd.ExecuteNonQuery();
+                    trans.Commit();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                    trans.Rollback();
+                }
             }
         }
     }
