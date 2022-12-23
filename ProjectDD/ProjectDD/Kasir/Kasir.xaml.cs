@@ -245,7 +245,7 @@ namespace ProjectDD
                 String id_item = cb_item.SelectedValue.ToString();
                 OracleCommand cmd = new OracleCommand();
                 cmd.Connection = connection.conn;
-                cmd.CommandText = $"SELECT status FROM admin.ITEMS where id='{id_item}'";
+                cmd.CommandText = $"SELECT status FROM admin.ITEMS@"+cb_trans_cab.SelectedValue+" where id='{id_item}'";
                 String status = cmd.ExecuteScalar() as String;
                 if (status == "Not Available")
                 {
