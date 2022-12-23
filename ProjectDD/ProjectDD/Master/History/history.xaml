@@ -12,7 +12,7 @@
         <Label Content="tampil history:" HorizontalAlignment="Left" Margin="24,101,0,0" VerticalAlignment="Top"/>
         <ComboBox x:Name="cbHistory" HorizontalAlignment="Left" Margin="114,103,0,0" VerticalAlignment="Top" Width="120"/>
         <Button x:Name="btnTampilkanHistory" Content="tampilkan" HorizontalAlignment="Left" Margin="244,105,0,0" VerticalAlignment="Top" Width="75" Click="btnTampilkanHistory_Clicked"/>
-        <DataGrid x:Name="dgHistory" HorizontalAlignment="Left" Height="256" Margin="24,136,0,0" VerticalAlignment="Top" Width="743"/>
+        <DataGrid x:Name="dgHistory" HorizontalAlignment="Left" Height="256" Margin="24,136,0,0" VerticalAlignment="Top" Width="743" SelectionChanged="dgHistory_SelectionChanged"/>
 
     </Grid>
 </Window>
