@@ -4,6 +4,7 @@ DROP TABLE TOOLS_CATEGORY CASCADE CONSTRAINTS;
 DROP TABLE SPAREPART_CATEGORY CASCADE CONSTRAINTS;
 DROP TABLE DTRANS CASCADE CONSTRAINTS;
 DROP TABLE HTRANS CASCADE CONSTRAINTS;
+DROP TABLE JASA CASCADE CONSTRAINTS;
 DROP MATERIALIZED VIEW TOOLS_cabdave;
 DROP MATERIALIZED VIEW TOOLS_cabjon;
 DROP MATERIALIZED VIEW TOOLS_cabbry;
@@ -12,16 +13,28 @@ DROP MATERIALIZED VIEW SPAREPART_cabdave;
 DROP MATERIALIZED VIEW SPAREPART_cabjon;
 DROP MATERIALIZED VIEW SPAREPART_cabbry;
 DROP MATERIALIZED VIEW SPAREPART_cabnando;
+DROP MATERIALIZED VIEW LOG ON TOOLS;
+DROP MATERIALIZED VIEW LOG ON SPAREPART;
+DROP MATERIALIZED VIEW LOG ON TOOLS_CATEGORY;
+DROP MATERIALIZED VIEW LOG ON SPAREPART_CATEGORY;
 DROP PUBLIC DATABASE LINK CABDAVE;
 DROP PUBLIC DATABASE LINK CABJON;
 DROP PUBLIC DATABASE LINK CABBRY;
 DROP PUBLIC DATABASE LINK CABNANDO;
 UNDEFINE LOCALID;
 PURGE RECYCLEBIN;
+SET SERVEROUTPUT ON;
 
 -- INI DIGANTI STRING IDENTIFIER CABANG SENDIRI SEBELUM DI RUN DI SQLPLUS
-DEF LOCALID = 'CBJ'
+DEF LOCALID = 'CBB'
 select '&LOCALID' from dual;
+
+CREATE TABLE JASA(
+	ID_JASA VARCHAR2(10) PRIMARY KEY,
+	NAMA VARCHAR2(100),
+	HARGA NUMBER,
+	STATUS NUMBER(1)
+);
 
 CREATE TABLE TOOLS_CATEGORY(
 	ID_CATEGORY VARCHAR2(10) PRIMARY KEY,
@@ -49,6 +62,7 @@ CREATE TABLE SPAREPART(
 	NAME VARCHAR2(100) NOT NULL,
 	ID_CATEGORY VARCHAR2(20),
 	STOK NUMBER(10) DEFAULT 0,
+	HARGA NUMBER DEFAULT 0,	
 	DESCRIPTION VARCHAR2(100),
 	FOREIGN KEY (ID_CATEGORY) REFERENCES SPAREPART_CATEGORY(ID_CATEGORY)
 );
@@ -63,6 +77,7 @@ CREATE TABLE HTRANS (
 	NO_POLISI VARCHAR2(20),
 	DESKRIPSI_KENDARAAN VARCHAR2(100),
 	TOTAL NUMBER,
+	DARI_CABANG VARCHAR2(10) DEFAULT '-',
 	STATUS NUMBER(1) DEFAULT 0
 );
 
@@ -76,7 +91,37 @@ CREATE TABLE DTRANS (
 	FOREIGN KEY (ID_HTRANS) REFERENCES HTRANS(ID_Transaksi)
 );
 
+create table history_stok(
+    id varchar2(10),
+    nama_barang varchar2(20),
+    stok_sebelum number(3),
+    stok_sesudah number(3),
+    keterangan varchar2(30),
+    tanggal date
+);
+
 --------------------TRIGGERS--------------------------
+--ID JASA
+CREATE OR REPLACE TRIGGER create_id_jasa 
+BEFORE INSERT ON JASA
+FOR EACH ROW
+DECLARE
+	IDLAMA VARCHAR2(10);
+	countid NUMBER(10);
+	localid VARCHAR2(10);
+BEGIN
+	select MAX(ID_JASA) into IDLAMA from JASA;
+	select '&LOCALID' into localid from dual;
+	if (IDLAMA IS NULL) then 
+		countid := 1;
+	else 
+		countid := substr(IDLAMA,-3,3)+1;
+	end if;
+	:NEW.ID_JASA :=  localid || '/J' || lpad(countid,3,'0');
+END;
+/
+SHOW ERR;
+
 --ID TOOLS
 CREATE OR REPLACE TRIGGER create_id_tools 
 BEFORE INSERT ON TOOLS
@@ -168,30 +213,6 @@ END;
 /
 show err;
 
---ID STOK_SPAREPART
-/* Create or replace Trigger autoIdStokSparepart
-before insert 
-    on STOK_SPAREPART
-    for each row
-declare 
-    temp_id varchar2(10);
-    err exception;
-begin
-	select max(ID) into temp_id from STOK_SPAREPART;
-
-	if temp_id IS NULL then
-		temp_id:=1;
-	ELSE 
-	temp_id := temp_id+1;
-	end if;
-
-	:new.ID := temp_id;
-exception 
-    when err then raise_application_error(-20003,'hangus');
-END;
-/
-show err; */
-
 --ID HTRANS
 Create or replace Trigger autoIdHtrans
 before insert 
@@ -237,7 +258,7 @@ begin
 		temp_id := substr(temp_id,-3,3)+1;
 	end if;
 
-	:new.id := localid||'/HT'||lpad(temp_id,3,'0');
+	:new.id := localid||'/DT'||lpad(temp_id,3,'0');
 exception 
     when err then raise_application_error(-20004,'hangus');
 END;
@@ -270,7 +291,6 @@ END;
 /
 show err;
 
-
 --TRIGGER UPDATE HTRANS
 Create or replace Trigger autoSumHtrans
 for insert or update or delete on dtrans 
@@ -299,6 +319,55 @@ END autoSumHtrans;
 show err;
 COMMIT;
 
+--id history stok
+Create or replace Trigger autoIdHistoryStok
+before insert 
+    on history_stok
+    for each row
+declare 
+    temp_id varchar2(10);
+	localid VARCHAR2(10);
+    err exception;
+begin
+	select max(id) into temp_id from history_stok;
+	select '&LOCALID' into localid from dual;	
+	
+	if temp_id IS NULL then
+		temp_id:=1;
+	ELSE 
+	temp_id := substr(temp_id,-3,3)+1;
+	end if;
+	:new.id := localid || '/H' ||lpad(temp_id,3,'0');
+exception 
+    when err then raise_application_error(-20008,'hangus');
+END;
+/
+show err;
+
+--trigger update history
+Create or replace Trigger updateStokHistory
+after update 
+    on sparepart
+    for each row
+declare 
+    temp_new number(3);
+    temp_old number(3);
+    err exception;
+begin
+    temp_new := :new.stok;
+    temp_old := :old.stok;
+    if( temp_new > temp_old) then
+        insert into history_stok values('',:new.name,:old.stok ,:new.stok,'restok barang', current_date);  
+    else
+        insert into history_stok values('',:new.name,:old.stok ,:new.stok,'barang terpakai/terjual', current_date);
+    end if;
+    
+exception 
+    when err then raise_application_error(-20009,'hangus');
+END;
+/
+show err;
+
 
 ----------------------------------------------
 
@@ -318,19 +387,39 @@ COMMIT;
 CREATE PUBLIC DATABASE LINK cabdave CONNECT TO admin IDENTIFIED BY admin USING 'cabdave';
 CREATE PUBLIC DATABASE LINK cabjon CONNECT TO admin IDENTIFIED BY admin USING 'cabjon'; 
 CREATE PUBLIC DATABASE LINK cabnando CONNECT TO admin IDENTIFIED BY nando USING 'cabnando'; 
-CREATE PUBLIC DATABASE LINK cabbry CONNECT TO admin IDENTIFIED BY admin USING 'cabbry';
+--CREATE PUBLIC DATABASE LINK cabbry CONNECT TO admin IDENTIFIED BY admin USING 'cabbry';
 
 ----------------------------VIEW---------------------------------
 
 CREATE or Replace VIEW ITEMS as 
-select t.id_tools as "ID" ,t.nama as "NAMA",tc.nama as "KATEGORI", 
+select j.id_jasa as "ID", j.nama as "NAMA", j.harga as "HARGA", 'JASA' as "KATEGORI", 
+(CASE WHEN j.STATUS = 1 THEN 'Available' ELSE 'Not Available' END) as "STATUS" 
+from jasa j
+union
+(select t.id_tools as "ID" ,t.nama as "NAMA", 0 as HARGA, tc.nama as "KATEGORI", 
 (CASE WHEN T.STATUS = 1 THEN 'Available' ELSE 'Not Available' END) as "STATUS"  
 from tools t,tools_category tc 
 where t.ID_CATEGORY = tc.ID_CATEGORY
 union
-select s.id_spare as "ID" ,s.name as "NAMA",sc.category_name as "KATEGORI", '@'||s.stok as "STATUS"  
+select s.id_spare as "ID" ,s.name as "NAMA",s.harga as "HARGA" ,sc.category_name as "KATEGORI",
+ '@'||s.stok as "STATUS"  
 from sparepart s,sparepart_category sc 
-where s.id_category = sc.id_category;
+where s.id_category = sc.id_category);
+
+-- KASIR
+DROP USER KASIR;
+CREATE USER KASIR IDENTIFIED BY kasir;
+GRANT CREATE SESSION TO KASIR;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TOOLS TO KASIR;
+GRANT SELECT, UPDATE, INSERT, DELETE ON SPAREPART TO KASIR;
+GRANT SELECT, UPDATE, INSERT, DELETE ON HTRANS TO KASIR;
+GRANT SELECT, UPDATE, INSERT, DELETE ON DTRANS TO KASIR;
+GRANT SELECT ON SPAREPART_CATEGORY TO KASIR;
+GRANT SELECT ON TOOLS_CATEGORY TO KASIR;
+GRANT SELECT ON CABANG TO KASIR;
+GRANT SELECT ON JASA TO KASIR;
+GRANT SELECT ON ITEMS TO KASIR;
+GRANT EXECUTE ON nextHtransId TO Kasir;
 
 --------------------MATERIALIZED VIEW--------------------------
 
@@ -345,10 +434,10 @@ CREATE MATERIALIZED VIEW TOOLS_cabnando as select T.ID_TOOLS,T.NAMA,TC.NAMA as K
 CREATE MATERIALIZED VIEW LOG ON SPAREPART with ROWID;
 CREATE MATERIALIZED VIEW LOG ON SPAREPART_CATEGORY with ROWID;
 
-CREATE MATERIALIZED VIEW SPAREPART_cabdave as select S.ID_SPARE,S.NAME,SC.CATEGORY_NAME,S.STOK,S.DESCRIPTION FROM SPAREPART@cabdave S, SPAREPART_CATEGORY@cabdave SC WHERE S.ID_CATEGORY = SC.ID_CATEGORY; 
-CREATE MATERIALIZED VIEW SPAREPART_cabjon as select S.ID_SPARE,S.NAME,SC.CATEGORY_NAME,S.STOK,S.DESCRIPTION FROM SPAREPART@cabjon S, SPAREPART_CATEGORY@cabjon SC WHERE S.ID_CATEGORY = SC.ID_CATEGORY; 
-CREATE MATERIALIZED VIEW SPAREPART_cabbry as select S.ID_SPARE,S.NAME,SC.CATEGORY_NAME,S.STOK,S.DESCRIPTION FROM SPAREPART@cabbry S, SPAREPART_CATEGORY@cabbry SC WHERE S.ID_CATEGORY = SC.ID_CATEGORY; 
-CREATE MATERIALIZED VIEW SPAREPART_cabnando as select S.ID_SPARE,S.NAME,SC.CATEGORY_NAME,S.STOK,S.DESCRIPTION FROM SPAREPART@cabnando S, SPAREPART_CATEGORY@cabnando SC WHERE S.ID_CATEGORY = SC.ID_CATEGORY; 
+CREATE MATERIALIZED VIEW SPAREPART_cabdave as select S.ID_SPARE,S.NAME,SC.CATEGORY_NAME,S.STOK,S.HARGA,S.DESCRIPTION FROM SPAREPART@cabdave S, SPAREPART_CATEGORY@cabdave SC WHERE S.ID_CATEGORY = SC.ID_CATEGORY; 
+CREATE MATERIALIZED VIEW SPAREPART_cabjon as select S.ID_SPARE,S.NAME,SC.CATEGORY_NAME,S.STOK,S.HARGA,S.DESCRIPTION FROM SPAREPART@cabjon S, SPAREPART_CATEGORY@cabjon SC WHERE S.ID_CATEGORY = SC.ID_CATEGORY; 
+CREATE MATERIALIZED VIEW SPAREPART_cabbry as select S.ID_SPARE,S.NAME,SC.CATEGORY_NAME,S.STOK,S.HARGA,S.DESCRIPTION FROM SPAREPART@cabbry S, SPAREPART_CATEGORY@cabbry SC WHERE S.ID_CATEGORY = SC.ID_CATEGORY; 
+CREATE MATERIALIZED VIEW SPAREPART_cabnando as select S.ID_SPARE,S.NAME,SC.CATEGORY_NAME,S.STOK,S.HARGA,S.DESCRIPTION FROM SPAREPART@cabnando S, SPAREPART_CATEGORY@cabnando SC WHERE S.ID_CATEGORY = SC.ID_CATEGORY; 
 
 
 ----------- INSERT AFTER CREATING ALL MVIEW --------------------
@@ -406,10 +495,10 @@ show err;
 CREATE OR REPLACE PROCEDURE Update_Cat_Tools ( name IN VARCHAR2, id in VARCHAR2)
 IS
 BEGIN
-	UPDATE TOOLS_CATEGORY@cabdave SET CATEGORY_NAME = name WHERE ID_CATEGORY = id;
-	UPDATE TOOLS_CATEGORY@cabjon SET CATEGORY_NAME = name WHERE ID_CATEGORY = id;
-	UPDATE TOOLS_CATEGORY@cabbry SET CATEGORY_NAME = name WHERE ID_CATEGORY = id;
-	UPDATE TOOLS_CATEGORY@cabnando SET CATEGORY_NAME = name WHERE ID_CATEGORY = id;	
+	UPDATE TOOLS_CATEGORY@cabdave SET NAMA = name WHERE ID_CATEGORY = id;
+	UPDATE TOOLS_CATEGORY@cabjon SET NAMA = name WHERE ID_CATEGORY = id;
+	UPDATE TOOLS_CATEGORY@cabbry SET NAMA = name WHERE ID_CATEGORY = id;
+	UPDATE TOOLS_CATEGORY@cabnando SET NAMA = name WHERE ID_CATEGORY = id;	
 	commit;
 END;
 /
@@ -456,17 +545,28 @@ END;
 /
 show err;
 
--- KASIR
-DROP USER KASIR;
-CREATE USER KASIR IDENTIFIED BY kasir;
-GRANT CREATE SESSION TO KASIR;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TOOLS TO KASIR;
-GRANT SELECT, UPDATE, INSERT, DELETE ON SPAREPART TO KASIR;
-GRANT SELECT, UPDATE, INSERT, DELETE ON HTRANS TO KASIR;
-GRANT SELECT, UPDATE, INSERT, DELETE ON DTRANS TO KASIR;
-GRANT SELECT ON SPAREPART_CATEGORY TO KASIR;
-GRANT SELECT ON TOOLS_CATEGORY TO KASIR;
-GRANT SELECT ON CABANG TO KASIR;
+-- buat mendapatkan next htrans di kasir
+CREATE OR REPLACE FUNCTION nextHtransId
+RETURN VARCHAR2
+IS
+    temp_id varchar2(10);
+    localid varchar2(10);
+BEGIN	
+	select max(ID_Transaksi) into temp_id from HTRANS;	
+	select '&LOCALID' into localid from dual;	
+	if temp_id IS NULL then
+		temp_id:=1;
+	ELSE 
+	temp_id := substr(temp_id,-3,3)+1;
+	end if;
+	RETURN localid||'/HT'||lpad(temp_id,3,'0');
+END nextHtransId;
+/
+show err;
+
+GRANT EXECUTE ON nextHtransId TO KASIR;
+GRANT EXECUTE ON REFRESH_ALL TO KASIR;
+GRANT EXECUTE ON REFRESH TO KASIR;
 
 GRANT SELECT ON SPAREPART_CABBRY TO KASIR;
 GRANT SELECT ON SPAREPART_CABJON TO KASIR;
@@ -476,8 +576,6 @@ GRANT SELECT ON TOOLS_CABBRY TO KASIR;
 GRANT SELECT ON TOOLS_CABJON TO KASIR;
 GRANT SELECT ON TOOLS_CABDAVE TO KASIR;
 GRANT SELECT ON TOOLS_CABNANDO TO KASIR;
-GRANT SELECT ON ITEMS TO KASIR;
-
 -- Dbms_Scheduler.Drop_Job (Job_Name => 'REFRESH')
 
 -- BEGIN
