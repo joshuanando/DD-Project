@@ -31,6 +31,7 @@ namespace ProjectDD
             OracleConnection conn = new OracleConnection(connectionString);
             connection.addConn(conn);
             connection.cabangnow = cabang;
+            connection.usernamenow = username;
 
             try
             {
@@ -42,7 +43,7 @@ namespace ProjectDD
                     this.Hide();
                     w.ShowDialog();
                 }
-                else if (username.ToLower() == "kasir")
+                else
                 {
                     Kasir w = new Kasir(conn);
                     this.Hide();

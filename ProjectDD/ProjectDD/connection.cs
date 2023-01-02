@@ -6,6 +6,7 @@ namespace ProjectDD
     {
         public static OracleConnection conn = null;
         public static string cabangnow = "";
+        public static string usernamenow = "";
 
         public static void addConn(OracleConnection con)
         {
