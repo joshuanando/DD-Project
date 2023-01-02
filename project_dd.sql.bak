@@ -78,7 +78,8 @@ CREATE TABLE HTRANS (
 	DESKRIPSI_KENDARAAN VARCHAR2(100),
 	TOTAL NUMBER,
 	DARI_CABANG VARCHAR2(10) DEFAULT '-',
-	STATUS NUMBER(1) DEFAULT 0
+	STATUS NUMBER(1) DEFAULT 0,
+	pegawai VARCHAR2(100) DEFAULT ''	
 );
 
 CREATE TABLE DTRANS (
@@ -407,8 +408,10 @@ from sparepart s,sparepart_category sc
 where s.id_category = sc.id_category);
 
 -- KASIR
-DROP USER KASIR;
-CREATE USER KASIR IDENTIFIED BY kasir;
+
+DROP ROLE KASIR;
+CREATE ROLE KASIR;
+
 GRANT CREATE SESSION TO KASIR;
 GRANT SELECT, UPDATE, INSERT, DELETE ON TOOLS TO KASIR;
 GRANT SELECT, UPDATE, INSERT, DELETE ON SPAREPART TO KASIR;
@@ -527,6 +530,32 @@ END;
 /
 show err;
 
+CREATE OR REPLACE PROCEDURE CREATE_PEGAWAI (username IN VARCHAR2, password in VARCHAR2 , cabang in VARCHAR2)
+IS
+BEGIN
+	EXECUTE IMMEDIATE 'DROP USER' || username;
+	EXECUTE IMMEDIATE 'CREATE USER' || username || 'IDENTIFIED BY' || password;
+	EXECUTE IMMEDIATE 'GRANT KASIR TO' || username;
+END;
+/
+show err;
+
+CREATE OR REPLACE PROCEDURE CHANGE_PASS_PEGAWAI (username IN VARCHAR2, password in VARCHAR2 , cabang in VARCHAR2)
+IS
+BEGIN
+	EXECUTE IMMEDIATE 'ALTER USER' || username || 'IDENTIFIED BY' || password;
+END;
+/
+show err;
+
+CREATE OR REPLACE PROCEDURE DELETE_PEGAWAI (username IN VARCHAR2 , cabang in VARCHAR2)
+IS
+BEGIN
+	EXECUTE IMMEDIATE 'DROP USER' || username;
+END;
+/
+show err;
+
 CREATE OR REPLACE PROCEDURE refresh ( name IN VARCHAR2)
 IS
 BEGIN
@@ -551,6 +580,10 @@ BEGIN
     refresh('sparepart_cabjon');
     refresh('sparepart_cabnando');
     refresh('sparepart_cabbry');	
+    refresh('items_cabdave');
+    refresh('items_cabjon');
+    refresh('items_cabnando');
+    refresh('items_cabbry');	
 END;
 /
 show err;
@@ -586,6 +619,11 @@ GRANT SELECT ON TOOLS_CABBRY TO KASIR;
 GRANT SELECT ON TOOLS_CABJON TO KASIR;
 GRANT SELECT ON TOOLS_CABDAVE TO KASIR;
 GRANT SELECT ON TOOLS_CABNANDO TO KASIR;
+
+DROP USER KASIR1;
+CREATE USER KASIR1 IDENTIFIED BY kasir1;
+GRANT KASIR TO KASIR1;
+
 -- Dbms_Scheduler.Drop_Job (Job_Name => 'REFRESH')
 
 -- BEGIN

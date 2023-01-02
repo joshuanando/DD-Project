@@ -18,6 +18,8 @@ namespace ProjectDD
         OracleConnection conn;
         DataTable dt;
         bool isupdating = false;
+        bool statusbeforeupdate;
+        string cabangbeforeupdate;
         string[] listview = { "View Tools", "View Sparepart" };
         List<Item> listitem = new List<Item>();
         List<db_cab> listcabang = new List<db_cab>()
@@ -61,7 +63,7 @@ namespace ProjectDD
         {
             connection.openConn();
             load_history();
-            label_cabang.Content = "Welcome Kasir of " + connection.cabangnow;
+            label_cabang.Content = "Welcome Kasir " + connection.usernamenow + " of " + connection.cabangnow;
             for (int i = 0; i < listview.Length; i++)
             {
                 view_cb.Items.Add(listview[i]);
@@ -182,6 +184,8 @@ namespace ProjectDD
                 cb_trans_cab.SelectedValue = rowdata[9];
                 cb_trans_cab.IsEnabled = false;
                 chk_status.IsChecked = Convert.ToBoolean(Convert.ToInt32(rowdata[10]));
+                statusbeforeupdate = Convert.ToBoolean(Convert.ToInt32(rowdata[10]));
+                cabangbeforeupdate = rowdata[9];
                 loadListBuyItems();
                 deletedDtransId.Clear();
             }
@@ -208,6 +212,8 @@ namespace ProjectDD
             dt_listbuyitem.Clear();
             updateTotal();
             deletedDtransId.Clear();
+            cabangbeforeupdate = null;
+            statusbeforeupdate = false;
         }
         private void btn_cancel_Click(object sender, RoutedEventArgs e)
         {
@@ -221,7 +227,10 @@ namespace ProjectDD
             // checking
             int qty = Convert.ToInt32(tb_qty.Text);
             String id_htrans = label_ID.Content.ToString();
-
+            if (isupdating)
+            {
+                return;
+            }
             if (qty<1)
             {
                 MessageBox.Show("Jumlah minimal 1");
@@ -245,7 +254,8 @@ namespace ProjectDD
                 String id_item = cb_item.SelectedValue.ToString();
                 OracleCommand cmd = new OracleCommand();
                 cmd.Connection = connection.conn;
-                cmd.CommandText = $"SELECT status FROM admin.ITEMS_"+cb_trans_cab.SelectedValue+ $" where id='{id_item}'";
+                cmd.CommandText = $"SELECT status FROM admin.items" +(cb_trans_cab.SelectedValue.ToString()=="-" ? "" : "_"+cb_trans_cab.SelectedValue)+$" where id='{id_item}'";
+                MessageBox.Show(cmd.CommandText);
                 String status = cmd.ExecuteScalar() as String;
                 if (status == "Not Available")
                 {
@@ -259,11 +269,11 @@ namespace ProjectDD
                 }
                 cmd = new OracleCommand();
                 cmd.Connection = connection.conn;
-                cmd.CommandText = $"SELECT nama FROM admin.ITEMS_" + cb_trans_cab.SelectedValue + $" where id='{id_item}'";
+                cmd.CommandText = $"SELECT nama FROM admin.items" + (cb_trans_cab.SelectedValue.ToString() == "-" ? "" : "_" + cb_trans_cab.SelectedValue) + $" where id='{id_item}'";
                 String nama = cmd.ExecuteScalar() as String;
                 cmd = new OracleCommand();
                 cmd.Connection = connection.conn;
-                cmd.CommandText = $"SELECT harga FROM admin.ITEMS_" + cb_trans_cab.SelectedValue + $" where id='{id_item}'";
+                cmd.CommandText = $"SELECT harga FROM admin.items" + (cb_trans_cab.SelectedValue.ToString() == "-" ? "" : "_" + cb_trans_cab.SelectedValue) + $" where id='{id_item}'";
                 long harga = Convert.ToInt64(cmd.ExecuteScalar());
                 if (!isupdating)
                 {
@@ -319,7 +329,7 @@ namespace ProjectDD
             long sum = 0;
             foreach (DataRowView row in dg_listbuy.ItemsSource)
             {
-                sum += Convert.ToInt64(row["HARGA_ITEM"]);
+                sum += (Convert.ToInt64(row["HARGA_ITEM"]) * Convert.ToInt64(row["JUMLAH"])) ;
             }
             lb_harga.Content = "Rp." + sum;
             return sum;
@@ -327,6 +337,7 @@ namespace ProjectDD
 
         private void btn_submit_Click(object sender, RoutedEventArgs e)
         {
+            bool failed = false;
             if (dt_listbuyitem.Rows.Count==0)
             {
                 MessageBox.Show("Harus ada item yang ditambahkan");
@@ -336,31 +347,143 @@ namespace ProjectDD
             // submit current, add or update
             //drop deletedDtransId
             if (isupdating)
-            {
-                using (OracleTransaction trans = conn.BeginTransaction())
+            {                
+                //htrans
+                using (OracleTransaction trans = connection.conn.BeginTransaction())
                 {
                     try
                     {
                         OracleCommand cmd = new OracleCommand();
-                        cmd.Connection = conn;
-                        /*cmd.CommandText = "update dtrans set id_item=:a,nama_item=:b,harga_item=:c,jumlah=:d, where id:=e";
-                        cmd.Parameters.Add(":a", id_item);
-                        cmd.Parameters.Add(":b", nama_item);
-                        cmd.Parameters.Add(":c", harga_item);
-                        cmd.Parameters.Add(":d", jumlah);
-                        cmd.Parameters.Add(":e", id_dtrans);
-                        cmd.ExecuteNonQuery();
-                        da_listitem.Update(dt);*/
+                        cmd.Connection = connection.conn;
+                        cmd.CommandText = "UPDATE ADMIN.HTRANS SET NAMA_PEMILIK=:pemilik, ALAMAT_PEMILIK=:alamat, NO_KTP=:noktp, NPWP=:npwp, NO_POLISI=:nopolisi, DESKRIPSI_KENDARAAN=:desk, TOTAL=:total, STATUS=:status, PEGAWAI=:pegawai where id_transaksi=:id";
+                        cmd.CommandType = CommandType.Text;
+                        cmd.Parameters.Add(":pemilik", tb_nama.Text);
+                        cmd.Parameters.Add(":alamat", tb_alamat.Text);
+                        cmd.Parameters.Add(":noktp", tb_no_ktp.Text);
+                        cmd.Parameters.Add(":npwp", tb_npwp.Text);
+                        cmd.Parameters.Add(":nopolisi", tb_no_polisi.Text);
+                        cmd.Parameters.Add(":desk", tb_deskripsi.Text);
+                        cmd.Parameters.Add(":total", updateTotal());
+                        cmd.Parameters.Add(":status", chk_status.IsChecked == true ? 1 : 0);
+                        cmd.Parameters.Add(":pegawai", connection.usernamenow);
+                        cmd.Parameters.Add(":id", label_ID.Content.ToString());
+                        cmd.Transaction = trans;
+                        cmd.ExecuteNonQuery(); ///
+                        //MessageBox.Show(cmd.CommandText);
+
                         trans.Commit();
-                        MessageBox.Show("Berhasil Update");
-                        deletedDtransId.Clear();
+                        MessageBox.Show("Berhasil Update! (hanya dapat update info pemilik dan status)");
                     }
                     catch (Exception ex)
                     {
                         MessageBox.Show(ex.Message);
                         trans.Rollback();
+                        failed = true;
+                    }        
+                }
+                if (!failed)
+                {
+                    //tambah stok
+                    if (statusbeforeupdate == true && chk_status.IsChecked == false && cabangbeforeupdate == "-") //
+                    {
+                        using (OracleTransaction trans = connection.conn.BeginTransaction())
+                        {
+                            try
+                            {
+                                foreach (DataRow r in dt_listbuyitem.Rows)
+                                {
+
+                                    bool valid = true;
+                                    List<int> liststok = new List<int>();
+
+                                    // get status
+                                    String id_htrans = label_ID.Content.ToString();
+                                    OracleCommand cmd = new OracleCommand();
+                                    cmd.Connection = connection.conn;
+                                    cmd.CommandText = $"SELECT status FROM admin.ITEMS where id='{r[2].ToString()}'";
+                                    cmd.Transaction = trans;
+                                    String status = cmd.ExecuteScalar() as String;
+
+                                    if (status != "Not Available" && status != "Available") // IF SPAREPART
+                                    {
+                                        int stok = Convert.ToInt32(status.Substring(1));
+                                        int newstok = stok + Convert.ToInt32(r[5].ToString());
+
+                                        cmd = new OracleCommand();
+                                        cmd.Connection = connection.conn;
+                                        cmd.CommandText = "UPDATE ADMIN.SPAREPART SET STOK=:newstok WHERE ID_SPARE=:id_spare";
+                                        cmd.CommandType = CommandType.Text;
+                                        cmd.Parameters.Add(":newstok", newstok);
+                                        cmd.Parameters.Add(":id_spare", r[2].ToString());
+                                        cmd.Transaction = trans;
+                                        cmd.ExecuteNonQuery();
+                                    }
+                                }
+                            }catch (Exception ex)
+                            {
+                                MessageBox.Show(ex.Message);
+                                trans.Rollback();
+                                failed = true;
+                            }
+                        }
+                    }
+                    //kurangi stok
+                    if (statusbeforeupdate == false && chk_status.IsChecked == true && cabangbeforeupdate == "-") //
+                    {
+                        using (OracleTransaction trans = connection.conn.BeginTransaction())
+                        {
+                            try
+                            {
+                                foreach (DataRow r in dt_listbuyitem.Rows)
+                                {
+                                    bool valid = true;
+                                    List<int> liststok = new List<int>();
+
+                                    // get status
+                                    String id_htrans = label_ID.Content.ToString();
+                                    OracleCommand cmd = new OracleCommand();
+                                    cmd.Connection = connection.conn;
+                                    cmd.CommandText = $"SELECT status FROM admin.ITEMS where id='{r[2].ToString()}'";
+                                    cmd.Transaction = trans;
+                                    String status = cmd.ExecuteScalar() as String;
+                                    if (status == "Not Available")
+                                    {
+                                        MessageBox.Show("Item/Tools sedang tidak dapat digunakan");
+                                    }
+                                    else if (status == "Available")
+                                    {
+                                        // if TOOLS / status not changed (change in admin)
+                                    }
+                                    else if (Convert.ToInt32(status.Substring(1)) < Convert.ToInt32(r[5].ToString()))
+                                    {
+                                        MessageBox.Show("Stok item < jumlah permintaan untuk " + r[3].ToString());
+                                    }
+                                    else // IF SPAREPART
+                                    {
+                                        int stok = Convert.ToInt32(status.Substring(1));
+                                        int newstok = stok - Convert.ToInt32(r[5].ToString());
+
+                                        cmd = new OracleCommand();
+                                        cmd.Connection = connection.conn;
+                                        cmd.CommandText = "UPDATE ADMIN.SPAREPART SET STOK=:newstok WHERE ID_SPARE=:id_spare";
+                                        cmd.CommandType = CommandType.Text;
+                                        cmd.Parameters.Add(":newstok", newstok);
+                                        cmd.Parameters.Add(":id_spare", r[2].ToString());
+                                        cmd.Transaction = trans;
+                                        cmd.ExecuteNonQuery();
+                                    }
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                MessageBox.Show(ex.Message);
+                                trans.Rollback();
+                                failed = true;
+                            }
+                        } 
                     }
                 }
+                load_history();
             }
             else {
                 //htrans
@@ -370,7 +493,7 @@ namespace ProjectDD
                     {
                         OracleCommand cmd = new OracleCommand();
                         cmd.Connection = connection.conn;
-                        cmd.CommandText = "INSERT INTO ADMIN.HTRANS(ID_Transaksi,Tanggal,NAMA_PEMILIK,ALAMAT_PEMILIK,NO_KTP,NPWP,NO_POLISI,DESKRIPSI_KENDARAAN,TOTAL,DARI_CABANG,STATUS) VALUES('', CURRENT_DATE, :pemilik, :alamat, :noktp, :npwp, :nopolisi, :desk, :total, :cab, :status)";
+                        cmd.CommandText = "INSERT INTO ADMIN.HTRANS(ID_Transaksi,Tanggal,NAMA_PEMILIK,ALAMAT_PEMILIK,NO_KTP,NPWP,NO_POLISI,DESKRIPSI_KENDARAAN,TOTAL,DARI_CABANG,STATUS,PEGAWAI) VALUES('', CURRENT_DATE, :pemilik, :alamat, :noktp, :npwp, :nopolisi, :desk, :total, :cab, :status, :pegawai)";
                         cmd.CommandType = CommandType.Text;
                         cmd.Parameters.Add(":pemilik", tb_nama.Text);
                         cmd.Parameters.Add(":alamat", tb_alamat.Text);
@@ -381,26 +504,16 @@ namespace ProjectDD
                         cmd.Parameters.Add(":total", updateTotal());
                         cmd.Parameters.Add(":cab", cb_trans_cab.SelectedValue as String);
                         cmd.Parameters.Add(":status", chk_status.IsChecked == true ? 1 : 0);
+                        cmd.Parameters.Add(":pegawai", connection.usernamenow);
                         cmd.Transaction = trans;
                         cmd.ExecuteNonQuery(); ///
                         //MessageBox.Show(cmd.CommandText);
-                        trans.Commit();
-                        MessageBox.Show("Berhasil");
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show(ex.Message);
-                        trans.Rollback();
-                    }
-                }
-                //dtrans
-                foreach (DataRow r in dt_listbuyitem.Rows)
-                {
-                    using (OracleTransaction trans = connection.conn.BeginTransaction())
-                    {
-                        try
+                        //trans.Commit();
+
+                        //dtrans
+                        foreach (DataRow r in dt_listbuyitem.Rows)
                         {
-                            OracleCommand cmd = new OracleCommand();
+                            cmd = new OracleCommand();
                             cmd.Connection = connection.conn;
                             cmd.CommandText = "INSERT INTO ADMIN.DTRANS(ID_HTRANS,ID_ITEM,NAMA_ITEM,HARGA_ITEM,JUMLAH) " +
                                 "VALUES(:id_htrans, :id_item, :nama, :harga, :jumlah)";
@@ -414,17 +527,20 @@ namespace ProjectDD
                             cmd.ExecuteNonQuery(); ///
                             //MessageBox.Show(cmd.CommandText);
                             //da.Update(dt);
-                            trans.Commit();
                         }
-                        catch (Exception ex)
-                        {
-                            MessageBox.Show(ex.Message);
-                            trans.Rollback();
-                        }
+                        trans.Commit();
+                        MessageBox.Show("Berhasil menambahkan");
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message);
+                        trans.Rollback();
+                        failed = true;
                     }
                 }
+
                 //update stok 
-                if (chk_status.IsChecked == true)
+                if (chk_status.IsChecked == true && !failed)
                 {
                     foreach (DataRow r in dt_listbuyitem.Rows)
                     {
@@ -434,7 +550,7 @@ namespace ProjectDD
                         // get status
                         String id_htrans = label_ID.Content.ToString();
                         try
-                        {;
+                        {
                             OracleCommand cmd = new OracleCommand();
                             cmd.Connection = connection.conn;
                             cmd.CommandText = $"SELECT status FROM admin.ITEMS where id='{r[2].ToString()}'";
@@ -443,18 +559,19 @@ namespace ProjectDD
                             {
                                 MessageBox.Show("Item/Tools sedang tidak dapat digunakan");
                             }
-                            else if (status == "Available") { 
+                            else if (status == "Available")
+                            {
                                 // if TOOLS / status not changed (change in admin)
                             }
                             else if (Convert.ToInt32(status.Substring(1)) < Convert.ToInt32(r[5].ToString()))
                             {
-                                MessageBox.Show("Stok item < jumlah permintaan untuk "+ r[3].ToString()); 
+                                MessageBox.Show("Stok item < jumlah permintaan untuk " + r[3].ToString());
                             }
                             else // IF SPAREPART
                             {
                                 int stok = Convert.ToInt32(status.Substring(1));
                                 int newstok = stok - Convert.ToInt32(r[5].ToString());
-                                
+
                                 using (OracleTransaction trans = connection.conn.BeginTransaction())
                                 {
                                     try
@@ -485,7 +602,67 @@ namespace ProjectDD
                         }
                     }
                 }
-                clearALL();
+
+                //insert ke cabang lain
+                if (cb_trans_cab.SelectedValue.ToString() != "-" && !failed)
+                {
+                    using (OracleTransaction trans = connection.conn.BeginTransaction())
+                    {
+                        try
+                        {
+                            OracleCommand cmd = new OracleCommand();
+                            cmd.Connection = connection.conn;
+                            cmd.CommandText = $"INSERT INTO ADMIN.HTRANS@{cb_trans_cab.SelectedValue.ToString()}(ID_Transaksi,Tanggal,NAMA_PEMILIK,ALAMAT_PEMILIK,NO_KTP,NPWP,NO_POLISI,DESKRIPSI_KENDARAAN,TOTAL,DARI_CABANG,STATUS,PEGAWAI) VALUES('', CURRENT_DATE, :pemilik, :alamat, :noktp, :npwp, :nopolisi, :desk, :total, :cab, :status, :pegawai)";
+                            cmd.CommandType = CommandType.Text;
+                            cmd.Parameters.Add(":pemilik", tb_nama.Text);
+                            cmd.Parameters.Add(":alamat", tb_alamat.Text);
+                            cmd.Parameters.Add(":noktp", tb_no_ktp.Text);
+                            cmd.Parameters.Add(":npwp", tb_npwp.Text);
+                            cmd.Parameters.Add(":nopolisi", tb_no_polisi.Text);
+                            cmd.Parameters.Add(":desk", tb_deskripsi.Text);
+                            cmd.Parameters.Add(":total", updateTotal());
+                            cmd.Parameters.Add(":cab", '-');
+                            cmd.Parameters.Add(":status", chk_status.IsChecked == true ? 1 : 0);
+                            cmd.Parameters.Add(":pegawai", connection.cabangnow+"-"+connection.usernamenow);
+                            cmd.Transaction = trans;
+                            cmd.ExecuteNonQuery(); ///
+                            //MessageBox.Show(cmd.CommandText);
+                            //trans.Commit();
+
+                            //dtrans
+                            foreach (DataRow r in dt_listbuyitem.Rows)
+                            {
+                                cmd = new OracleCommand();
+                                cmd.Connection = connection.conn;
+                                cmd.CommandText = $"INSERT INTO ADMIN.DTRANS@{cb_trans_cab.SelectedValue.ToString()}(ID_HTRANS,ID_ITEM,NAMA_ITEM,HARGA_ITEM,JUMLAH) " +
+                                    "VALUES(:id_htrans, :id_item, :nama, :harga, :jumlah)";
+                                cmd.CommandType = CommandType.Text;
+                                cmd.Parameters.Add(":id_htrans", r[1].ToString());
+                                cmd.Parameters.Add(":id_item", r[2].ToString());
+                                cmd.Parameters.Add(":nama", r[3].ToString());
+                                cmd.Parameters.Add(":harga", r[4].ToString());
+                                cmd.Parameters.Add(":jumlah", r[5].ToString());
+                                cmd.Transaction = trans;
+                                cmd.ExecuteNonQuery(); ///
+                                //MessageBox.Show(cmd.CommandText);
+                                //da.Update(dt);
+                            }
+                            trans.Commit();
+                            MessageBox.Show("Berhasil menambah ke cabang "+cb_trans_cab.SelectedValue);
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show(ex.Message);
+                            trans.Rollback();
+                            failed = true;
+                        }
+                    }
+                }
+
+                if (!failed)
+                {
+                    clearALL();
+                }
                 load_history();
             }
             loadcb(cb_trans_cab.SelectedValue.ToString());
@@ -494,6 +671,15 @@ namespace ProjectDD
         private void cb_trans_cab_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             string selectedcabangtrans = cb_trans_cab.SelectedValue.ToString();
+            if (selectedcabangtrans!="-" && !isupdating)
+            {
+                chk_status.IsChecked = false;
+                chk_status.IsEnabled = false;
+            }
+            else
+            {
+                chk_status.IsEnabled = true;
+            }
             loadcb(selectedcabangtrans);
         }
         private void loadcb(string cabang)
@@ -504,7 +690,7 @@ namespace ProjectDD
             String query = "select * from admin.items";
             if (cabang!="-")
             {
-                query += $"@{cabang}";
+                query = $"select * from admin.items_{cabang}";
             }
             try
             {
@@ -527,8 +713,7 @@ namespace ProjectDD
             }
             catch(Exception ex)
             {
-                MessageBox.Show(ex.Message); 
-                cb_trans_cab.SelectedItem = cb_item.Items[0];
+                MessageBox.Show(ex.Message);
             }
         }
         private void ComboBox_SelectionUpdate(object sender, KeyEventArgs e)
@@ -589,6 +774,10 @@ namespace ProjectDD
 
         private void dg_listbuy_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
+            if (isupdating)
+            {
+                return;
+            }
             IInputElement element = e.MouseDevice.DirectlyOver;
             if (element != null && element is FrameworkElement)
             {
@@ -608,6 +797,10 @@ namespace ProjectDD
                         }
                     }
                 }
+            }
+            if (dt_listbuyitem.Rows.Count==0)
+            {
+                cb_trans_cab.IsEnabled = true;
             }
         }
     }
