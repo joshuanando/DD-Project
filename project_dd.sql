@@ -529,28 +529,34 @@ END;
 /
 show err;
 
-CREATE OR REPLACE PROCEDURE CREATE_PEGAWAI (username IN VARCHAR2, password in VARCHAR2 , cabang in VARCHAR2)
+CREATE OR REPLACE PROCEDURE CREATE_PEGAWAI (username IN VARCHAR2, password in VARCHAR2)
 IS
+	query varchar(150);
 BEGIN
-	EXECUTE IMMEDIATE 'DROP USER' || username;
-	EXECUTE IMMEDIATE 'CREATE USER' || username || 'IDENTIFIED BY' || password;
-	EXECUTE IMMEDIATE 'GRANT KASIR TO' || username;
+	query := 'CREATE USER ' || username || ' IDENTIFIED BY ' || password;
+	EXECUTE IMMEDIATE ( query );
+	query := 'GRANT KASIR TO ' || username;
+	EXECUTE IMMEDIATE ( query );
 END;
 /
 show err;
 
-CREATE OR REPLACE PROCEDURE CHANGE_PASS_PEGAWAI (username IN VARCHAR2, password in VARCHAR2 , cabang in VARCHAR2)
+CREATE OR REPLACE PROCEDURE CHANGE_PASS_PEGAWAI (username IN VARCHAR2, password in VARCHAR2)
 IS
+	query varchar(150);
 BEGIN
-	EXECUTE IMMEDIATE 'ALTER USER' || username || 'IDENTIFIED BY' || password;
+	query := 'ALTER USER ' || username || ' IDENTIFIED BY ' || password;
+	EXECUTE IMMEDIATE ( query );
 END;
 /
 show err;
 
-CREATE OR REPLACE PROCEDURE DELETE_PEGAWAI (username IN VARCHAR2 , cabang in VARCHAR2)
+CREATE OR REPLACE PROCEDURE DELETE_PEGAWAI (username IN VARCHAR2)
 IS
+	query varchar(150);
 BEGIN
-	EXECUTE IMMEDIATE 'DROP USER' || username;
+	query := 'DROP USER ' || username;
+	EXECUTE IMMEDIATE ( query );
 END;
 /
 show err;

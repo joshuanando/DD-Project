@@ -1,0 +1,20 @@
+﻿<Window x:Class="ProjectDD.Master.Kasir.MasterKasir"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ProjectDD.Master.Kasir"
+        mc:Ignorable="d"
+        Title="MasterKasir" Height="450" Width="800">
+    <Grid>
+        <DataGrid x:Name="DG_kasir" HorizontalAlignment="Left" Height="399" Margin="334,10,0,0" VerticalAlignment="Top" Width="448" MouseDoubleClick="DG_kasir_MouseDoubleClick" IsReadOnly="True"/>
+        <ComboBox x:Name="cb_action" HorizontalAlignment="Left" Margin="117,62,0,0" VerticalAlignment="Top" Width="145" SelectionChanged="cb_action_SelectionChanged"/>
+        <Label Content="Action" HorizontalAlignment="Left" Margin="29,62,0,0" VerticalAlignment="Top"/>
+        <Label Content="Username" HorizontalAlignment="Left" Margin="29,105,0,0" VerticalAlignment="Top" RenderTransformOrigin="1.143,0.538"/>
+        <TextBox x:Name="username_txtbox" HorizontalAlignment="Left" Height="23" Margin="117,108,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="145"/>
+        <Label x:Name="password_label" Content="Password" HorizontalAlignment="Left" Margin="29,151,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="password_txtbox" HorizontalAlignment="Left" Height="23" Margin="117,154,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="145"/>
+        <Button x:Name="action_btn" Content="Insert" HorizontalAlignment="Left" Margin="38,216,0,0" VerticalAlignment="Top" Width="224" Click="action_btn_Click"/>
+
+    </Grid>
+</Window>

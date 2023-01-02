@@ -28,6 +28,7 @@ namespace ProjectDD
             var connectionString = "Data Source=" + cabang + "; User ID=" + username + "; Password=" + password;
 
             //MessageBox.Show(connectionString);
+
             OracleConnection conn = new OracleConnection(connectionString);
             connection.addConn(conn);
             connection.cabangnow = cabang;

@@ -156,5 +156,11 @@ namespace ProjectDD
             Master.Tools.Tools pTools = new Master.Tools.Tools();
             pTools.Show();
         }
+
+        private void addkasir_button_Click(object sender, RoutedEventArgs e)
+        {
+            Master.Kasir.MasterKasir mk = new Master.Kasir.MasterKasir();
+            mk.Show();
+        }
     }
 }

@@ -67,6 +67,7 @@ namespace ProjectDD
                 view_cb.Items.Add(listview[i]);
             }
             view_cb.SelectedItem = view_cb.Items[0];
+
             listcabang.RemoveAll(x => x.nama_cabang.ToUpper() == connection.cabangnow.ToUpper());
             cb_trans_cab.Items.Clear();
             cb_trans_cab.ItemsSource = listcabang;
