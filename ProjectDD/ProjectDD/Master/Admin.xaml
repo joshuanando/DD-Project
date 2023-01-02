@@ -17,7 +17,7 @@
         <ComboBox x:Name="CRUD_CB" HorizontalAlignment="Left" Margin="186,163,0,0" VerticalAlignment="Top" Width="163"/>
         <ComboBox x:Name="TableCB" HorizontalAlignment="Left" Margin="11,163,0,0" VerticalAlignment="Top" Width="163"/>
         <Button x:Name="btnTools" Content="Tools" HorizontalAlignment="Left" Margin="189,11,0,0" VerticalAlignment="Top" Width="74" Click="btnTools_Clicked"/>
-        <Button x:Name="addkasir_button" Content="Add Kasir" HorizontalAlignment="Left" Margin="274,11,0,0" VerticalAlignment="Top" Width="75"/>
+        <Button x:Name="addkasir_button" Content="Add Kasir" HorizontalAlignment="Left" Margin="274,11,0,0" VerticalAlignment="Top" Width="75" Click="addkasir_button_Click"/>
 
     </Grid>
 </Window>
