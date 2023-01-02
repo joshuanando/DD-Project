@@ -100,14 +100,6 @@ create table history_stok(
     tanggal date
 );
 
-create table pegawai(
-	id varchar2(10),
-	username VARCHAR2(50),
-	password VARCHAR2(50),
-	role VARCHAR2(50),
-	cabang VARCHAR2(20)
-);
-
 --------------------TRIGGERS--------------------------
 --ID JASA
 CREATE OR REPLACE TRIGGER create_id_jasa 
@@ -352,31 +344,6 @@ END;
 /
 show err;
 
---id pegawai 
-Create or replace Trigger autoIdPegawai
-before insert 
-    on pegawai
-    for each row
-declare 
-    temp_id varchar2(10);
-	localid VARCHAR2(10);
-    err exception;
-begin
-	select max(id) into temp_id from pegawai;
-	select '&LOCALID' into localid from dual;	
-	
-	if temp_id IS NULL then
-		temp_id:=1;
-	ELSE 
-	temp_id := substr(temp_id,-3,3)+1;
-	end if;
-	:new.id := localid || '/PG' ||lpad(temp_id,3,'0');
-exception 
-    when err then raise_application_error(-20009,'err pegawai');
-END;
-/
-show err;
-
 --trigger update history
 Create or replace Trigger updateStokHistory
 after update 
@@ -566,7 +533,6 @@ CREATE OR REPLACE PROCEDURE CREATE_PEGAWAI (username IN VARCHAR2, password in VA
 IS
 BEGIN
 	EXECUTE IMMEDIATE 'DROP USER' || username;
-	INSERT INTO PEGAWAI VALUES('',username,password,'kasir',cabang);
 	EXECUTE IMMEDIATE 'CREATE USER' || username || 'IDENTIFIED BY' || password;
 	EXECUTE IMMEDIATE 'GRANT KASIR TO' || username;
 END;
@@ -576,7 +542,6 @@ show err;
 CREATE OR REPLACE PROCEDURE CHANGE_PASS_PEGAWAI (username IN VARCHAR2, password in VARCHAR2 , cabang in VARCHAR2)
 IS
 BEGIN
-	UPDATE PEGAWAI SET password = password where username = username and cabang = cabang;
 	EXECUTE IMMEDIATE 'ALTER USER' || username || 'IDENTIFIED BY' || password;
 END;
 /
@@ -585,7 +550,6 @@ show err;
 CREATE OR REPLACE PROCEDURE DELETE_PEGAWAI (username IN VARCHAR2 , cabang in VARCHAR2)
 IS
 BEGIN
-	DELETE FROM PEGAWAI where username = username and cabang = cabang;
 	EXECUTE IMMEDIATE 'DROP USER' || username;
 END;
 /
