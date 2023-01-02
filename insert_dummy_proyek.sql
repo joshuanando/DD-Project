@@ -76,5 +76,11 @@ INSERT INTO DTRANS VALUES ('', '&LOCALID/'||'HT002', '&LOCALID/'||'S001', 'Bolt 
 INSERT INTO DTRANS VALUES ('', '&LOCALID/'||'HT002', '&LOCALID/'||'S001', 'Bearing Ball 6203', 50000, 1);
 INSERT INTO DTRANS VALUES ('', '&LOCALID/'||'HT003', '&LOCALID/'||'S009', 'Knalpot Honda Beat', 750000, 1);
 
-commit;
 INSERT INTO HTRANS(ID_Transaksi,Tanggal,NAMA_PEMILIK,ALAMAT_PEMILIK,NO_KTP,NPWP,NO_POLISI,DESKRIPSI_KENDARAAN,TOTAL,DARI_CABANG,STATUS) VALUES ('', CURRENT_DATE, 'Dave', 'Jl. Ngagel Jaya Tengah No. 71', '1234567890123456', '219116824', 'W 1234 RR', 'Honda Beat', 0,'-', 1);
+
+insert into pegawai values ('','kasir1','kasir1','kasir','cabdave');
+insert into pegawai values ('','kasir1','kasir1','kasir','cabjon');
+insert into pegawai values ('','kasir1','kasir1','kasir','cabnando');
+insert into pegawai values ('','kasir1','kasir1','kasir','cabbry');
+
+commit;
