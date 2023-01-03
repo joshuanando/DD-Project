@@ -614,9 +614,31 @@ BEGIN
 END nextHtransId;
 /
 show err;
---select nexthtransid from dual;
+
+-- buat mendapatkan next htrans db lain di kasir
+CREATE OR REPLACE FUNCTION nextHtransIdLain (cabang IN VARCHAR2)
+RETURN VARCHAR2
+IS
+    temp_id varchar2(10);
+	localid varchar2(10);
+	query varchar(150);
+BEGIN	
+	
+	query := 'select max(ID_Transaksi) from HTRANS@'||CABANG;		
+	EXECUTE IMMEDIATE ( query ) into temp_id;	
+	if temp_id IS NULL then
+		temp_id:=1;
+	ELSE 
+	temp_id := substr(temp_id,-3,3)+1;
+	end if;
+	localid := substr(UPPER(cabang),0,1)|| substr(UPPER(cabang),3,2);
+	RETURN localid||'/HT'||lpad(temp_id,3,'0');
+END nextHtransIdLain;
+/
+show err;
 
 GRANT EXECUTE ON nextHtransId TO KASIR;
+GRANT EXECUTE ON nextHtransIdLain TO KASIR;
 GRANT EXECUTE ON REFRESH_ALL TO KASIR;
 GRANT EXECUTE ON REFRESH TO KASIR;
 
