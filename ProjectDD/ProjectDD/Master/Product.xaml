@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ProjectDD.Master"
         mc:Ignorable="d"
-        Title="Product" Height="450" Width="800">
+        Title="Product" Height="800" Width="800">
     <Grid>
         <Label x:Name="lbl_Title" Content="List Sparepart" HorizontalAlignment="Left" Margin="50,10,0,0" VerticalAlignment="Top" FontWeight="Bold" FontSize="22" FontStyle="Italic"/>
         <DataGrid x:Name="dgProduct" HorizontalAlignment="Left" Height="280" Margin="50,100,0,0" VerticalAlignment="Top" Width="690" IsReadOnly="True">
@@ -23,7 +23,28 @@
         <ComboBox x:Name="cbCabang" HorizontalAlignment="Left" Margin="145,67,0,0" VerticalAlignment="Top" Width="120"/>
         <Button x:Name="btnTampil" Content="Tampilkan" HorizontalAlignment="Left" Margin="270,67,0,0" VerticalAlignment="Top" Width="75" Height="22" HorizontalContentAlignment="Center" Click="btnTampil_Click_1"/>
         <Button x:Name="btnInsertSparepart" Content="(+) Insert" HorizontalAlignment="Left" Margin="665,67,0,0" VerticalAlignment="Top" Width="75" Height="22" FontWeight="Bold" Background="Lime" Click="Button_Click"/>
-        <Button x:Name="btnRefreshSparepart1" Content="Refresh" Width="75" HorizontalAlignment="Left" Margin="355,68,0,0" VerticalAlignment="Top" Click="btnRefreshSparepart1_Clicked"/>
+        <Button x:Name="btnRefreshSparepart1" Content="Refresh" Width="75" Height="22" HorizontalAlignment="Left" Margin="355,67,0,0" VerticalAlignment="Top" Click="btnRefreshSparepart1_Clicked"/>
+        <GroupBox x:Name="gbUpSpare" Header="Update Sparepart" HorizontalAlignment="Left" Height="350" Margin="50,385,0,0" VerticalAlignment="Top" Width="300"/>
+        <Label x:Name="lblUpID" Content="ID Sparepart:" HorizontalAlignment="Left" Margin="89,424,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="txtUpIdSpare" HorizontalAlignment="Left" Height="23" Margin="178,426,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" IsReadOnly="True"/>
+        <Label x:Name="lblUpNama" Content="Nama:" HorizontalAlignment="Left" Margin="71,465,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="txtUpNama" HorizontalAlignment="Left" Height="23" Margin="121,465,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="195"/>
+        <Label x:Name="lblUpCat" Content="Category:" HorizontalAlignment="Left" Margin="71,496,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="lblUpStok" Content="Stok:" HorizontalAlignment="Left" Margin="71,527,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="txtUpStok" HorizontalAlignment="Left" Height="23" Margin="121,529,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="195" PreviewTextInput="txtUpStok_PreviewTextInput"/>
+        <Label x:Name="lblUpHarga" Content="Harga:" HorizontalAlignment="Left" Margin="71,558,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="txtUpHarga" HorizontalAlignment="Left" Height="23" Margin="121,561,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="195" PreviewTextInput="TextBox_PreviewTextInput"/>
+        <Label x:Name="lblUpDesc" Content="Description:" HorizontalAlignment="Left" Margin="71,589,0,0" VerticalAlignment="Top"/>
+        <RichTextBox x:Name="rtbUpDesc" HorizontalAlignment="Left" Height="80" Margin="150,593,0,0" VerticalAlignment="Top" Width="166">
+            <FlowDocument>
+                <Paragraph>
+                    <Run Text=""/>
+                </Paragraph>
+            </FlowDocument>
+        </RichTextBox>
+        <Button x:Name="btnUpSparepart" Content="Update" HorizontalAlignment="Left" Margin="159,695,0,0" VerticalAlignment="Top" Width="75" Height="22" Click="btnUpSparepart_Click"/>
+        <ComboBox x:Name="cbCategorySpare" HorizontalAlignment="Left" Margin="137,498,0,0" VerticalAlignment="Top" Width="179" RenderTransformOrigin="0.497,0.438"/>
+
 
     </Grid>
 </Window>
