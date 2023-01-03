@@ -162,5 +162,11 @@ namespace ProjectDD
             Master.Kasir.MasterKasir mk = new Master.Kasir.MasterKasir();
             mk.Show();
         }
+
+        private void jasa_button_Click(object sender, RoutedEventArgs e)
+        {
+            Master.Jasa.MasterJasa mj = new Master.Jasa.MasterJasa();
+            mj.Show();
+        }
     }
 }

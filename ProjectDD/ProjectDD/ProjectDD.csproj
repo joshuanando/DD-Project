@@ -75,6 +75,9 @@
     <Compile Include="Master\History\history.xaml.cs">
       <DependentUpon>history.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Master\Jasa\MasterJasa.xaml.cs">
+      <DependentUpon>MasterJasa.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Master\Kasir\MasterKasir.xaml.cs">
       <DependentUpon>MasterKasir.xaml</DependentUpon>
     </Compile>
@@ -138,6 +141,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Master\History\history.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Master\Jasa\MasterJasa.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
