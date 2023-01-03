@@ -176,7 +176,7 @@ namespace ProjectDD.Master
                     "Stok: " + dataRowView[3].ToString() + "\n",
                     "Update / Delete Sparepart",
                     "Update!",
-                    "Cancel!") == MessageBoxResult.OK)
+                    "Delete!") == MessageBoxResult.OK)
                 {
                     //doUpdate
                     hideUpdate(false);

@@ -171,6 +171,16 @@ namespace ProjectDD.Master.Tools
             try
             {
                 DataRowView dataRowView = (DataRowView)((Button)e.Source).DataContext;
+                txtUpIdTools.Text = dataRowView[0].ToString();
+                txtUpNamaTools.Text = dataRowView[1].ToString();
+                if (dataRowView[3].ToString() == "Available")
+                {
+                    txtUpStat.Text = "1";
+                }
+                else
+                {
+                    txtUpStat.Text = "0";
+                }
                 if (CustomMessageBox.ShowOKCancel(
                     "ID Tools: " + dataRowView[0].ToString() + "\n" +
                     "==================================================" +
@@ -179,24 +189,37 @@ namespace ProjectDD.Master.Tools
                     "Status: " + dataRowView[3].ToString() + "\n",
                     "Update / Delete Tools",
                     "Update!",
-                    "Cancel!") == MessageBoxResult.OK)
+                    "Delete!") == MessageBoxResult.OK)
                 {
                     //doUpdate
                     hideUpdate(false);
-                    txtUpIdTools.Text = dataRowView[0].ToString();
-                    txtUpNamaTools.Text = dataRowView[1].ToString();
-                    if (dataRowView[3].ToString() == "Available")
-                    {
-                        txtUpStat.Text = "1";
-                    }
-                    else
-                    {
-                        txtUpStat.Text = "0";
-                    }
                 }
                 else
                 {
-                    //doDelete
+                    //doDeletetry
+                    connection.openConn();
+                    using (OracleTransaction trans = connection.conn.BeginTransaction())
+                    {
+                        try
+                        {
+                            OracleCommand cmd = new OracleCommand();
+                            cmd.Connection = connection.conn;
+                            cmd.CommandText = "DELETE FROM ADMIN.TOOLS WHERE ID_TOOLS=:id_toolsT";
+                            cmd.CommandType = CommandType.Text;
+                            cmd.Parameters.Add(":id_toolsT", txtUpIdTools.Text);
+                            cmd.Transaction = trans;
+                            cmd.ExecuteNonQuery();
+                            trans.Commit();
+                            MessageBox.Show("Berhasil Delete!");
+                            hideUpdate(true);
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show(ex.Message);
+                            trans.Rollback();
+                        }
+                    }
+                    connection.closeConn();
                 }
             }
             catch (Exception ex)
