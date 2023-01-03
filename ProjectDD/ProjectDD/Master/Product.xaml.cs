@@ -163,25 +163,50 @@ namespace ProjectDD.Master
             try
             {
                 DataRowView dataRowView = (DataRowView)((Button)e.Source).DataContext;
+                txtUpIdSpare.Text = dataRowView[0].ToString();
+                txtUpNama.Text = dataRowView[1].ToString();
+                txtUpStok.Text = dataRowView[3].ToString();
+                txtUpHarga.Text = dataRowView[4].ToString();
+                rtbUpDesc.Document.Blocks.Add(new Paragraph(new Run(dataRowView[5].ToString())));
                 if (CustomMessageBox.ShowOKCancel(
-                    "ID Sparepart: "+ dataRowView[0].ToString()+"\n"+
-                    "=================================================="+
+                    "ID Sparepart: " + dataRowView[0].ToString() + "\n" +
+                    "==================================================" +
                     "Nama Sparepart: " + dataRowView[1].ToString() + "\n" +
                     "Kategori: " + dataRowView[2].ToString() + "\n" +
                     "Stok: " + dataRowView[3].ToString() + "\n",
                     "Update / Delete Sparepart",
                     "Update!",
-                    "Cancel!") == MessageBoxResult.OK){
+                    "Cancel!") == MessageBoxResult.OK)
+                {
                     //doUpdate
                     hideUpdate(false);
-                    txtUpIdSpare.Text = dataRowView[0].ToString();
-                    txtUpNama.Text = dataRowView[1].ToString();
-                    txtUpStok.Text = dataRowView[3].ToString();
-                    txtUpHarga.Text = dataRowView[4].ToString();
-                    rtbUpDesc.Document.Blocks.Add(new Paragraph(new Run(dataRowView[5].ToString())));
                 }
-                else{
-                    //doDelete
+                else
+                {
+                    //doDeletetry
+                    connection.openConn();
+                    using (OracleTransaction trans = connection.conn.BeginTransaction())
+                    {
+                        try
+                        {
+                            OracleCommand cmd = new OracleCommand();
+                            cmd.Connection = connection.conn;
+                            cmd.CommandText = "DELETE FROM ADMIN.SPAREPART WHERE ID_SPARE=:id_spareS";
+                            cmd.CommandType = CommandType.Text;
+                            cmd.Parameters.Add(":id_spareS", txtUpIdSpare.Text);
+                            cmd.Transaction = trans;
+                            cmd.ExecuteNonQuery();
+                            trans.Commit();
+                            MessageBox.Show("Berhasil Delete!");
+                            hideUpdate(true);
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show(ex.Message);
+                            trans.Rollback();
+                        }
+                    }
+                    connection.closeConn();
                 }
             }
             catch (Exception ex)
