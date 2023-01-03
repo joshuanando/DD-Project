@@ -215,7 +215,6 @@ namespace ProjectDD.Master
 
         private void btnUpSparepart_Click(object sender, RoutedEventArgs e)
         {
-            connection.openConn();
             string tempCate = cbCategorySpare.SelectedItem.ToString();
             string tempId = "";
             for (int i = 0; i < listkat.Count; i++)
@@ -227,24 +226,26 @@ namespace ProjectDD.Master
             }
             string richDesc = new TextRange(rtbUpDesc.Document.ContentStart, rtbUpDesc.Document.ContentEnd).Text;
 
+            connection.openConn();
             using (OracleTransaction trans = connection.conn.BeginTransaction())
             {
                 try
                 {
                     OracleCommand cmd = new OracleCommand();
                     cmd.Connection = connection.conn;
-                    cmd.CommandText = "UPDATE ADMIN.SPAREPART SET NAME=:name, ID_CATEGORY=:id_category, STOK=:stok, HARGA=:harga, DESCRIPTION=:desc where ID_SPARE=:id_spare";
+                    cmd.CommandText = "UPDATE ADMIN.SPAREPART SET NAME=:nameS, ID_CATEGORY=:id_categoryS, STOK=:stokS, HARGA=:hargaS, DESCRIPTION=:descS where ID_SPARE=:id_spareS";
                     cmd.CommandType = CommandType.Text;
-                    cmd.Parameters.Add(":name", txtUpNama.Text);
-                    cmd.Parameters.Add(":id_category", tempId);
-                    cmd.Parameters.Add(":stok", Convert.ToInt32(txtUpStok.Text));
-                    cmd.Parameters.Add(":harga", Convert.ToInt32(txtUpHarga.Text));
-                    cmd.Parameters.Add(":desc", richDesc);
-                    cmd.Parameters.Add(":id_spare", txtUpIdSpare.Text);
+                    cmd.Parameters.Add(":nameS", txtUpNama.Text);
+                    cmd.Parameters.Add(":id_categoryS", tempId);
+                    cmd.Parameters.Add(":stokS", Convert.ToInt64(txtUpStok.Text));
+                    cmd.Parameters.Add(":hargaS", Convert.ToInt64(txtUpHarga.Text));
+                    cmd.Parameters.Add(":descS", richDesc);
+                    cmd.Parameters.Add(":id_spareS", txtUpIdSpare.Text);
                     cmd.Transaction = trans;
                     cmd.ExecuteNonQuery();
                     trans.Commit();
                     MessageBox.Show("Berhasil Update!");
+                    hideUpdate(true);
                 }
                 catch (Exception ex)
                 {
