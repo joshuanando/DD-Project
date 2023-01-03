@@ -5,16 +5,37 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ProjectDD.Master.Tools"
         mc:Ignorable="d"
-        Title="Tools" Height="450" Width="800">
+        Title="Tools" Height="450" Width="1130">
     <Grid>
         <Label Content="List Tools" HorizontalAlignment="Left" Margin="21,49,0,0" VerticalAlignment="Top" FontSize="36"/>
         <Button x:Name="btnBackTools" Content="Back" HorizontalAlignment="Left" Margin="23,19,0,0" VerticalAlignment="Top" Width="74" Click="btnBackTools_Clicked"/>
-        <DataGrid x:Name="dgTools" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="20,116,21,24"/>
-        <Button x:Name="btnInsertTools" Content="Insert" Width="75" HorizontalAlignment="Left" Margin="700,77,0,0" VerticalAlignment="Top" Click="btnInsertTools_Clicked"/>
+        <DataGrid x:Name="dgTools" Margin="20,116,350.2,24" IsReadOnly="True">
+            <DataGrid.Columns>
+                <DataGridTemplateColumn>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Click="Button_Click" Content="Action" Width="75" Height="22" FontWeight="Bold" Background="Yellow"></Button>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+        <Button x:Name="btnInsertTools" Content="Insert" Width="75" Height="22" HorizontalAlignment="Left" Margin="698,77,0,0" VerticalAlignment="Top" Click="btnInsertTools_Clicked"/>
         <Label Content="Pada Cabang:" HorizontalAlignment="Left" Margin="190,71,0,0" VerticalAlignment="Top"/>
         <ComboBox x:Name="cbCabangTools" HorizontalAlignment="Left" Margin="285,75,0,0" VerticalAlignment="Top" Width="120"/>
         <Button x:Name="btnTampilTools" Content="Tampilkan" HorizontalAlignment="Left" Margin="410,75,0,0" VerticalAlignment="Top" Width="75" Height="22" HorizontalContentAlignment="Center" Click="btnTampilTools_Clicked"/>
-        <Button x:Name="btnRefreshTools" Content="Refresh" Width="75" HorizontalAlignment="Left" Margin="502,76,0,0" VerticalAlignment="Top" Click="btnRefreshTools_Clicked"/>
+        <Button x:Name="btnRefreshTools" Content="Refresh" Width="75" HorizontalAlignment="Left" Margin="490,75,0,0" VerticalAlignment="Top" Height="22" Click="btnRefreshTools_Clicked"/>
+        <GroupBox x:Name="gbUpTools" Header="Update Tools" HorizontalAlignment="Left" Height="230" Margin="797,116,0,0" VerticalAlignment="Top" Width="300"/>
+        <Label x:Name="lblUpId" Content="ID Tools:" HorizontalAlignment="Left" Margin="852,150,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="txtUpIdTools" HorizontalAlignment="Left" Height="23" Margin="911,152,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" IsReadOnly="True"/>
+        <Label x:Name="lblUpNama" Content="Nama Tools:" HorizontalAlignment="Left" Margin="813,187,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="txtUpNamaTools" HorizontalAlignment="Left" Height="23" Margin="893,191,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="180"/>
+        <Label x:Name="lblUpCat" Content="Kategori:" HorizontalAlignment="Left" Margin="813,219,0,0" VerticalAlignment="Top"/>
+        <ComboBox x:Name="cbCategoryTools" HorizontalAlignment="Left" Margin="872,221,0,0" VerticalAlignment="Top" Width="201"/>
+        <Label x:Name="lblUpStat" Content="Status:" HorizontalAlignment="Left" Margin="813,252,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="txtUpStat" HorizontalAlignment="Left" Height="23" Margin="863,253,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="33"/>
+        <Label x:Name="lblUpKet" Content="*1: Aktif  0: Non-Aktif" HorizontalAlignment="Left" Margin="901,252,0,0" VerticalAlignment="Top"/>
+        <Button x:Name="btnUpTools" Content="Update" HorizontalAlignment="Left" Margin="904,302,0,0" VerticalAlignment="Top" Width="75" Click="btnUpTools_Click"/>
 
     </Grid>
 </Window>
