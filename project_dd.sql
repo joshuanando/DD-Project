@@ -599,19 +599,22 @@ CREATE OR REPLACE FUNCTION nextHtransId
 RETURN VARCHAR2
 IS
     temp_id varchar2(10);
-    localid varchar2(10);
+	localid varchar2(10);
+    currentdb varchar2(10);
 BEGIN	
 	select max(ID_Transaksi) into temp_id from HTRANS;	
-	select '&LOCALID' into localid from dual;	
+	select * into currentdb from GLOBAL_NAME;	
 	if temp_id IS NULL then
 		temp_id:=1;
 	ELSE 
 	temp_id := substr(temp_id,-3,3)+1;
 	end if;
+	localid := substr(currentdb,0,1)|| substr(currentdb,3,2);
 	RETURN localid||'/HT'||lpad(temp_id,3,'0');
 END nextHtransId;
 /
 show err;
+--select nexthtransid from dual;
 
 GRANT EXECUTE ON nextHtransId TO KASIR;
 GRANT EXECUTE ON REFRESH_ALL TO KASIR;
