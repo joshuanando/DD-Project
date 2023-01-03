@@ -47,7 +47,6 @@ namespace ProjectDD.Master
             }
             else
             {
-                loadKategori();
                 gbUpSpare.Visibility = Visibility.Visible;
                 lblUpID.Visibility = Visibility.Visible;
                 txtUpIdSpare.Visibility = Visibility.Visible;
@@ -71,6 +70,7 @@ namespace ProjectDD.Master
             c = conn;
             init();
             hideUpdate(true);
+            loadKategori();
         }
 
         private static readonly Regex _regex = new Regex("^[^0-9]"); //regex that matches disallowed text
@@ -215,6 +215,7 @@ namespace ProjectDD.Master
 
         private void btnUpSparepart_Click(object sender, RoutedEventArgs e)
         {
+            connection.openConn();
             string tempCate = cbCategorySpare.SelectedItem.ToString();
             string tempId = "";
             for (int i = 0; i < listkat.Count; i++)
@@ -236,10 +237,10 @@ namespace ProjectDD.Master
                     cmd.CommandType = CommandType.Text;
                     cmd.Parameters.Add(":name", txtUpNama.Text);
                     cmd.Parameters.Add(":id_category", tempId);
-                    cmd.Parameters.Add(":stok", txtUpStok);
-                    cmd.Parameters.Add(":harga", txtUpHarga);
+                    cmd.Parameters.Add(":stok", Convert.ToInt32(txtUpStok.Text));
+                    cmd.Parameters.Add(":harga", Convert.ToInt32(txtUpHarga.Text));
                     cmd.Parameters.Add(":desc", richDesc);
-                    cmd.Parameters.Add(":id_spare", txtUpIdSpare);
+                    cmd.Parameters.Add(":id_spare", txtUpIdSpare.Text);
                     cmd.Transaction = trans;
                     cmd.ExecuteNonQuery();
                     trans.Commit();
@@ -251,6 +252,7 @@ namespace ProjectDD.Master
                     trans.Rollback();
                 }
             }
+            connection.closeConn();
         }
     }
 }
